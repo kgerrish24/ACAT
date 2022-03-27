@@ -6,7 +6,7 @@ import logging
 import os
 import shutil
 from configparser import ConfigParser
-from .global_ import *
+from .app_settings import *
 
 
 logger = logging.getLogger(__name__)

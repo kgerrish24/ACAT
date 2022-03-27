@@ -3,7 +3,7 @@
 import hashlib
 import logging
 from configparser import ConfigParser
-from .global_ import *
+from .app_settings import *
 
 
 # todo: option to display all hashes

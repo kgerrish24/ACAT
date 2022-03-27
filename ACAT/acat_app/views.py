@@ -10,7 +10,7 @@ from django.utils.html import linebreaks
 from configparser import ConfigParser
 from .file_hash import *
 from .genkeypair import *
-from .global_ import *
+from .app_settings import *
 from .messaging import *
 
 

@@ -1,7 +1,7 @@
 # ACAT/ACAT/acat_app/urls.py
 
 from django.urls import path
-from .global_ import *
+from .app_settings import *
 from .views import about, app_settings, examine, file_hash, generate_Certificate, genkeypair, index, messaging, upload
 
 

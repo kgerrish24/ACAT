@@ -3,4 +3,4 @@
 
 # from django.test import TestCase
 
-from .global_ import *
+from .app_settings import *

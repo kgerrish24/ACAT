@@ -3,4 +3,4 @@
 # from django.contrib import admin
 
 
-from .global_ import *
+from .app_settings import *

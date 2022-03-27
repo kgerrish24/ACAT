@@ -2,7 +2,7 @@
 
 
 from django.apps import AppConfig
-from .global_ import *
+from .app_settings import *
 
 
 class AcatAppConfig(AppConfig):

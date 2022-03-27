@@ -1,4 +1,4 @@
-# ACAT/ACAT/acat_app/global_.py
+# ACAT/ACAT/acat_app/app_settings.py
 
 
 # move global variables to this file

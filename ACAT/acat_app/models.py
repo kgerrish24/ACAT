@@ -2,4 +2,4 @@
 
 # from django.db import models
 
-from .global_ import *
+from .app_settings import *

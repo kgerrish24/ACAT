@@ -2,7 +2,7 @@
 
 import logging
 from cryptography.fernet import Fernet
-from .global_ import *
+from .app_settings import *
 
 
 # todo: resolve leading and trailing character formatting

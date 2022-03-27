@@ -2,4 +2,4 @@
 
 # from django import forms
 
-from .global_ import *
+from .app_settings import *
