@@ -5,12 +5,10 @@ import logging
 from configparser import ConfigParser
 from .global_ import *
 
-# todo: 1) implement previous hashlib algorithms MD4, MDC2, SM3, Whirlpool, RIPEMD-160, MD5-SHA1, SHA512_224, and SHA512_256
-# todo: 2) option to display all hashes
-# todo: 3) get Adler32 working
-# todo: 4) implement zlib's CRC
-# todo: 5) output hash values to screen
-# todo: 6) debug blake2
+
+# todo: option to display all hashes
+# todo: debug adler32
+# todo: debug blake2
 
 
 logger = logging.getLogger(__name__)
@@ -58,7 +56,7 @@ def generate_File_Hash(file, fh_Alg_Selection, fh_shake_digest):
         file_Hash_Value = hash_object.hexdigest()
     print("Alg Selection    :  ", fh_Alg_Selection)
     print("Hash Value       :  ", file_Hash_Value)
-    # $ write hash type and hash value to config file
+    # write hash type and hash value to config file
     configP_Writer_Object = ConfigParser()
     configP_Writer_Object.read("settings.ini")
     configP_FILE_HASHING = configP_Writer_Object["FILE_HASHING"]

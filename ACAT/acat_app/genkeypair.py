@@ -6,26 +6,16 @@ import logging
 import os
 import shutil
 from configparser import ConfigParser
-
 from .global_ import *
+
 
 logger = logging.getLogger(__name__)
 
 
-# // todo: 1) form data to varibles
-# todo: 4) add compute hash for selected files
-# // todo: 6) clear the curve attribute if generating an rsa or dsa certificate
-# todo: 8) Continue x509 cert function similar to https://certificatetools.com/
-# todo: 14) pass args to TLS engines instead of using global variables
-# // todo: 15) duplicate each generated cert and append date, time, and CN
-# todo: 16) add subject Alt Name logic
-# // todo: 17) add ability to leave cert values blank
-# todo: 18) setup logic for key usage
-# todo: 19) setup logic for extended key usage
-
-
-# $ Crypto Engine 1 RSA DSA
-# $ Crypto Engine 2 EC
+# todo: pass args to TLS engines instead of using global variables?
+# todo: add subject Alt Name logic
+# todo: setup logic for key usage
+# todo: setup logic for extended key usage
 
 
 def configP_from_ConfigFile():
@@ -63,26 +53,9 @@ def configP_from_ConfigFile():
 
 def configP_to_ConfigFile(request):
     logging.info("FUNCTION configP_to_ConfigFile")
-    from .views import (
-        issuer_C,
-        issuer_CN,
-        issuer_L,
-        issuer_O,
-        issuer_OU,
-        issuer_S,
-        private_Algorithm,
-        private_Curve,
-        private_Format,
-        private_KeySize,
-        private_SigAlg,
-        subject_C,
-        subject_CN,
-        subject_L,
-        subject_O,
-        subject_OU,
-        subject_S,
-    )
-
+    from .views import private_Algorithm, private_Curve, private_Format, private_KeySize, private_SigAlg
+    from .views import issuer_C, issuer_CN, issuer_L, issuer_O, issuer_OU, issuer_S
+    from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
     configP_PRIVATE_KEY["KeySize"] = private_KeySize
     configP_PRIVATE_KEY["SigAlg"] = private_SigAlg
     configP_PRIVATE_KEY["Algorithm"] = private_Algorithm
@@ -117,7 +90,8 @@ def file_Processing(fp_NewCert_TimeStamp):
     fp_cert_Public = "public.crt"
     # Strip Period and At characters off Subject_CN so it can be safely added to filename
     Subject_CN_PrepFileName = subject_CN
-    Subject_CN_ForFileName = Subject_CN_PrepFileName.replace(".", "-").replace("@", "-")
+    Subject_CN_ForFileName = Subject_CN_PrepFileName.replace(
+        ".", "-").replace("@", "-")
     # Check if directory exists, if not then create
     isExist = os.path.exists(path_NewCerts)
     if isExist == False:
@@ -125,58 +99,27 @@ def file_Processing(fp_NewCert_TimeStamp):
         os.mkdir(path_NewCerts)
     # Check for private cert, if found then copy to directory and append date, time, and subject
     if os.path.isfile(fp_cert_Private):
-        logging.info("FUNCTION file_Processing IF os.path.isfile(fp_cert_Private)")
+        logging.info(
+            "FUNCTION file_Processing IF os.path.isfile(fp_cert_Private)")
         shutil.copy(fp_cert_Private, path_NewCerts)
-        os.rename(
-            path_NewCerts + fp_cert_Private,
-            path_NewCerts
-            + fp_NewCert_TimeStamp
-            + Subject_CN_ForFileName
-            + "_"
-            + fp_cert_Private,
-        )
+        os.rename(path_NewCerts + fp_cert_Private, path_NewCerts +
+                  fp_NewCert_TimeStamp + Subject_CN_ForFileName + "_" + fp_cert_Private,)
     # Check for public cert, if found then copy to directory and append date, time, and subject
     if os.path.isfile(fp_cert_Public):
-        logging.info("FUNCTION file_Processing IF os.path.isfile(fp_cert_Public)")
         shutil.copy(fp_cert_Public, path_NewCerts)
-        os.rename(
-            path_NewCerts + fp_cert_Public,
-            path_NewCerts
-            + fp_NewCert_TimeStamp
-            + Subject_CN_ForFileName
-            + "_"
-            + fp_cert_Public,
-        )
+        os.rename(path_NewCerts + fp_cert_Public, path_NewCerts +
+                  fp_NewCert_TimeStamp + Subject_CN_ForFileName + "_" + fp_cert_Public,)
 
 
+# crypto engine 1 used for RSA and DSA certs
 def crypto_Engine_1():
     logging.info("FUNCTION crypto_Engine_1")
     import random
-
     from OpenSSL import crypto
-
-    from .views import (
-        issuer_C,
-        issuer_CN,
-        issuer_L,
-        issuer_O,
-        issuer_OU,
-        issuer_S,
-        no_issuer_Address,
-        no_subject_Address,
-        private_Algorithm,
-        private_Curve,
-        private_Format,
-        private_KeySize,
-        private_SigAlg,
-        subject_C,
-        subject_CN,
-        subject_L,
-        subject_O,
-        subject_OU,
-        subject_S,
-    )
-
+    from .views import private_Curve, private_Format, private_KeySize, private_SigAlg
+    from .views import issuer_C, issuer_CN, issuer_L, issuer_O, issuer_OU, issuer_S
+    from .views import no_issuer_Address, no_subject_Address, private_Algorithm
+    from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
     private_key = crypto.PKey()
     if private_Algorithm == "RSA":
         logging.info("FUNCTION crypto_Engine_1 IF cert_Algorithm == RSA")
@@ -219,30 +162,26 @@ def crypto_Engine_1():
     x509.set_version(2)
     x509.add_extensions(
         [
-            crypto.X509Extension(
-                b"subjectAltName",
-                False,
-                ",".join(
-                    [
-                        "DNS:%s" % subject_CN % (),
-                        "DNS:*.%s" % subject_CN % (),
-                        "DNS:localhost",
-                        "DNS:*.localhost",
-                    ]
-                ).encode(),
-            ),
-            crypto.X509Extension(b"keyUsage", True, b"digitalSignature,keyEncipherment"),
-            crypto.X509Extension(b"extendedKeyUsage", False, b"clientAuth,serverAuth"),
-            crypto.X509Extension(b"basicConstraints", True, b"CA:false"),
-        ]
-    )
+            crypto.X509Extension
+            (b"subjectAltName", False,
+             ",".join(["DNS:%s" % subject_CN % (),
+                       "DNS:*.%s" % subject_CN % (),
+                       "DNS:localhost",
+                       "DNS:*.localhost",
+                       ]
+                      ).encode(),
+             ),
+            crypto.X509Extension(b"keyUsage", True,
+                                 b"digitalSignature,keyEncipherment"),
+            crypto.X509Extension(b"extendedKeyUsage", False,
+                                 b"clientAuth,serverAuth"),
+            crypto.X509Extension(b"basicConstraints", True,
+                                 b"CA:false"), ])
     x509.sign(private_key, (private_SigAlg))
-    return (
-        crypto.dump_certificate(crypto.FILETYPE_PEM, x509),
-        crypto.dump_privatekey(crypto.FILETYPE_PEM, private_key),
-    )
+    return (crypto.dump_certificate(crypto.FILETYPE_PEM, x509), crypto.dump_privatekey(crypto.FILETYPE_PEM, private_key),)
 
 
+# crypto engine 2 used for EC certs
 def crypto_Engine_2():
     logging.info("FUNCTION crypto_Engine_2")
     from cryptography import x509
@@ -250,35 +189,14 @@ def crypto_Engine_2():
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.x509.oid import NameOID
-
-    from .views import (
-        issuer_C,
-        issuer_CN,
-        issuer_L,
-        issuer_O,
-        issuer_OU,
-        issuer_S,
-        no_issuer_Address,
-        no_subject_Address,
-        private_Algorithm,
-        private_Curve,
-        private_Format,
-        private_KeySize,
-        private_SigAlg,
-        subject_C,
-        subject_CN,
-        subject_L,
-        subject_O,
-        subject_OU,
-        subject_S,
-    )
-
+    from .views import issuer_C, issuer_CN, issuer_L, issuer_O, issuer_OU, issuer_S
+    from .views import no_issuer_Address, no_subject_Address, private_Algorithm, private_Curve, private_Format, private_KeySize, private_SigAlg
+    from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
     one_day = datetime.timedelta(1, 0, 0)
     if private_Algorithm == "RSA":
         logging.info("FUNCTION crypto_Engine_2 IF cert_Algorithm == RSA")
         private_key = rsa.generate_private_key(
-            public_exponent=65537, key_size=(int(private_KeySize)), backend=default_backend()
-        )
+            public_exponent=65537, key_size=(int(private_KeySize)), backend=default_backend())
     elif private_Algorithm == "EC":
         logging.info("FUNCTION crypto_Engine_2 ELIF cert_Algorithm == EC")
         if private_Curve == "secp521r1":
@@ -307,7 +225,8 @@ def crypto_Engine_2():
             x509.Name(
                 [
                     x509.NameAttribute(NameOID.ORGANIZATION_NAME, subject_O),
-                    x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, subject_OU),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, subject_OU),
                     x509.NameAttribute(NameOID.COMMON_NAME, subject_CN),
                 ]
             )
@@ -317,10 +236,12 @@ def crypto_Engine_2():
             x509.Name(
                 [
                     x509.NameAttribute(NameOID.COUNTRY_NAME, subject_C),
-                    x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, subject_S),
+                    x509.NameAttribute(
+                        NameOID.STATE_OR_PROVINCE_NAME, subject_S),
                     x509.NameAttribute(NameOID.LOCALITY_NAME, subject_L),
                     x509.NameAttribute(NameOID.ORGANIZATION_NAME, subject_O),
-                    x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, subject_OU),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, subject_OU),
                     x509.NameAttribute(NameOID.COMMON_NAME, subject_CN),
                 ]
             )
@@ -331,7 +252,8 @@ def crypto_Engine_2():
             x509.Name(
                 [
                     x509.NameAttribute(NameOID.ORGANIZATION_NAME, issuer_O),
-                    x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, issuer_OU),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, issuer_OU),
                     x509.NameAttribute(NameOID.COMMON_NAME, issuer_CN),
                 ]
             )
@@ -341,16 +263,19 @@ def crypto_Engine_2():
             x509.Name(
                 [
                     x509.NameAttribute(NameOID.COUNTRY_NAME, issuer_C),
-                    x509.NameAttribute(NameOID.STATE_OR_PROVINCE_NAME, issuer_S),
+                    x509.NameAttribute(
+                        NameOID.STATE_OR_PROVINCE_NAME, issuer_S),
                     x509.NameAttribute(NameOID.LOCALITY_NAME, issuer_L),
                     x509.NameAttribute(NameOID.ORGANIZATION_NAME, issuer_O),
-                    x509.NameAttribute(NameOID.ORGANIZATIONAL_UNIT_NAME, issuer_OU),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, issuer_OU),
                     x509.NameAttribute(NameOID.COMMON_NAME, issuer_CN),
                 ]
             )
         )
     builder = builder.not_valid_before(datetime.datetime.today() - one_day)
-    builder = builder.not_valid_after(datetime.datetime.today() + (one_day * 365 * 1))
+    builder = builder.not_valid_after(
+        datetime.datetime.today() + (one_day * 365 * 1))
     builder = builder.serial_number(x509.random_serial_number())
     builder = builder.public_key(public_key)
     builder = builder.add_extension(

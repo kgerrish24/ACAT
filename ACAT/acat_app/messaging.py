@@ -1,18 +1,11 @@
 # ACAT/ACAT/acat_app/messaging.py
 
 import logging
-
 from cryptography.fernet import Fernet
-
 from .global_ import *
 
-# // todo: 1) get decryption working continously
-# // todo: 2) encryption and decryption keys run into each other on the webpage
-# todo: 3) tweak settings for bytes data input, make it simpler
 
-
-# $ https://asecuritysite.com/encryption/ferdecode
-# $ https://asecuritysite.com/encryption/fernet
+# todo: resolve leading and trailing character formatting
 
 
 logger = logging.getLogger(__name__)

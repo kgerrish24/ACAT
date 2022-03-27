@@ -3,7 +3,6 @@
 
 import logging
 import time
-
 from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -14,30 +13,12 @@ from .genkeypair import *
 from .global_ import *
 from .messaging import *
 
-# // todo: 3) consolidate views
-# // todo: 5) organize request execution view into functions
-# // todo: 7) move configuration to settings and functions
-# todo: 2) encrypted messaging
-# todo: 9) password hash extractor and identifier
-# todo: 10) add abilities to about page
-# todo: 11) add ssh ver-1 keypair generation
-# todo: 12) add ssh ver-2 keypair generation
-# todo: 13) activity audit database
-# todo: 16) narrow module import
-# // todo: 19) fix upper case starting variables, convert to camel case
-# // todo: 20) tweak logging
-# todo: 21) debug logging
-# // todo: 22) break code out into individual files
-# todo: 23) cleanup project url paterns and namespaces
-# todo: 24) add brute force password cracking for apps like zip archiving
-# todo: 25) add password salt/hash analysis and cracking Windows OS
-# todo: 26) expand menu system
-# todo: 27) add cryptographic standards and comparisons charts or datasets (constructor, digest, block, alg, purpose, rounds, bits, year, been compromised?)
-# todo: 28) file hashing
-# todo: 29) create a cryptography app for performance benchmarking. CPU and GPU and MultiThreaded
-# todo: 30) document which crypto features come from which modules, populate about section
-# todo: 31) verification and diagnostics process
-# todo: 32) convert the config parser setup to an internal database
+
+# todo: add ssh keypair generation
+# todo: add a page of info on cryptographic standards and comparisons (constructor, digest, block, alg, enc purpose, rounds, bits, year implemented, been compromised?)
+# todo: move the settings from Config Parser to a database
+# todo: add activity audit logging database
+# todo: store certificates in database
 
 
 logger = logging.getLogger(__name__)
@@ -82,13 +63,14 @@ def file_hash(request):
         cp_hash_Type = format(configP_FILE_HASHING["hash_type"])
         cp_hash_Value = format(configP_FILE_HASHING["hash_value"])
         context = {
-        "cp_hash_Type": cp_hash_Type,
-        "cp_hash_Value": cp_hash_Value,
+            "cp_hash_Type": cp_hash_Type,
+            "cp_hash_Value": cp_hash_Value,
         }
         # return response with template and context
         return render(request, "acat_app/file_hash.html", context)
     return render(request, "acat_app/file_hash.html")
     # return render(request, "acat_app/file_hash.html", {"file_url": file_url})
+
 
 def genkeypair(request):
     # uses the function generate_Certificate
@@ -145,7 +127,8 @@ def generate_Certificate(request):
             private_to_Webpage = linebreaks(
                 format(configP_CERTIFICATE_DATA["PRIVATE2_DECODED"])
             )
-            public_to_Webpage = linebreaks(format(configP_CERTIFICATE_DATA["PUBLIC2_DECODED"]))
+            public_to_Webpage = linebreaks(
+                format(configP_CERTIFICATE_DATA["PUBLIC2_DECODED"]))
         else:
             execute_Crypto_Engine_1()
             from .genkeypair import configP_Writer_Object
@@ -156,7 +139,8 @@ def generate_Certificate(request):
             private_to_Webpage = linebreaks(
                 format(configP_CERTIFICATE_DATA["PRIVATE1_DECODED"])
             )
-            public_to_Webpage = linebreaks(format(configP_CERTIFICATE_DATA["PUBLIC1_DECODED"]))
+            public_to_Webpage = linebreaks(
+                format(configP_CERTIFICATE_DATA["PUBLIC1_DECODED"]))
         html = (
             "<html><body><a href=/genkeypair>Click to Return</a><p>Private Certificate Displayed First and Saved to PRIVATE.KEY.</p>Public Certificate Displayed Second and saved to PUBLIC.CRT.<p></p>Private Certificate Below<p></p> %s </body></html>"
             % private_to_Webpage
@@ -215,7 +199,8 @@ def messaging(request):
 def new_design(request):
     # create a dictionary to pass
     # data to the template
-    context = {"data": "New design sandbox web page", "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    context = {"data": "New design sandbox web page",
+               "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
     # return response with template and context
     return render(request, "new_design.html", context)
 
@@ -223,7 +208,8 @@ def new_design(request):
 def test_view(request):
     # create a dictionary to pass
     # data to the template
-    context = {"data": "Gfg is the best", "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
+    context = {"data": "Gfg is the best",
+               "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
     # return response with template and context
     return render(request, "test.html", context)
 
