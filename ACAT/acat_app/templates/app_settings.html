@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+    <h3 class="w3-bar-item">Menu</h3>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    <a href="#" class="w3-bar-item w3-button">Link 3</a>
+</div>
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+
+    <div class="w3-row w3-padding-64">
+        <div class="w3-twothird w3-container">
+            <h2 class="w3-text-teal">Settings</h2>
+        </div>
+    </div>
+
+    <!DOCTYPE html>
+    <html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+        <title>Homepage</title>
+    </head>
+
+    <body>
+
+        <p> Data via form {{ data }}</p>
+
+        <h4>List is </h4>
+        <ul>
+            {% for i in list %}
+            <li>{{ i }}</li>
+            {% endfor %}
+
+
+            <fieldset>
+                <h4>Issuer Attributes</h4>
+                <input type="checkbox" id="no_Iss_Add" name="no_Iss_Add" value="no_Iss_Add" checked="checked">
+                <label for="no_Iss_Add">Do Not Add Issuer Address</label><br>
+
+                <div class="form-group">
+                    <span>Common Name</span>
+                    <input class="form-field" type="text" name="Issuer_CN" id="Issuer_CN"
+                        value="certificateauthority.com">
+                </div>
+                <div class="form-group">
+                    <span>Organization</span>
+                    <input class="form-field" type=" text" name="Issuer_O" id="Issuer_O" value="Issuing Company, Inc.">
+
+                </div>
+                <div class="form-group">
+                    <span>Organization Unit</span>
+                    <input class="form-field" type="text" name="Issuer_OU" id="Issuer_OU" value="IT">
+
+                </div>
+                <div class="form-group">
+                    <span>Locality</span>
+                    <input class="form-field" type="text" name="Issuer_L" id="Issuer_L" value="Columbus">
+
+                </div>
+                <div class="form-group">
+                    <span>State</span>
+                    <input class="form-field" type="text" name="Issuer_S" id="Issuer_S" value="Ohio">
+
+                </div>
+                <div class="form-group">
+                    <span>Country</span>
+                    <input class="form-field" type="text" name="Issuer_C" id="Issuer_C" value="US">
+                </div>
+            </fieldset>
+
+
+    </body>
+
+    </html>
+
+
+    {% endblock content %}

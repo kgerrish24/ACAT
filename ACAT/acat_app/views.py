@@ -81,20 +81,27 @@ def genkeypair(request):
 
 def generate_Certificate(request):
     logging.info("FUNCTION HTML generate_Certificate")
-    global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
+    global private_KeySize, private_SigAlg, private_Algorithm, private_Curve
     global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
-    global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
-    global no_subject_Address, no_issuer_Address
-    private_Curve = ""
+    global issuer_CN, issuer_OU, issuer_O, issuer_L, issuer_S, issuer_C
+    global no_subject_Address, no_issuer_Address, private_Format
+    no_issuer_Address = None
     if request.method == "POST" and "run_script" in request.POST:
-        # get private key selections
+        # initialize config parser
+        configP_Writer_Object = ConfigParser()
+        configP_Writer_Object.read("settings.ini")
+        configP_PRIVATE_KEY = configP_Writer_Object["PRIVATE_KEY"]
+        configP_SUBJECT_ATTRIBUTES = configP_Writer_Object["SUBJECT_ATTRIBUTES"]
+        configP_ISSUER_ATTRIBUTES = configP_Writer_Object["ISSUER_ATTRIBUTES"]
+        configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
+        # get user selected settings from web page
         private_KeySize = request.POST.get("KeySize")
         private_SigAlg = request.POST.get("SigAlg")
         private_Algorithm = request.POST.get("Algorithm")
+        # Remove curve data if not using an Elliptic Curve in the cert
         if private_Algorithm == "EC":
             private_Curve = request.POST.get("Curve")
         private_Format = request.POST.get("Format")
-        # get subject attribute information
         no_subject_Address = request.POST.get("no_Sub_Add")
         subject_CN = request.POST.get("Subject_CN")
         subject_O = request.POST.get("Subject_O")
@@ -102,43 +109,52 @@ def generate_Certificate(request):
         subject_L = request.POST.get("Subject_L")
         subject_S = request.POST.get("Subject_S")
         subject_C = request.POST.get("Subject_C")
-        # get issuer attribute information
-        no_issuer_Address = request.POST.get("no_Iss_Add")
-        issuer_CN = request.POST.get("Issuer_CN")
-        issuer_O = request.POST.get("Issuer_O")
-        issuer_OU = request.POST.get("Issuer_OU")
-        issuer_L = request.POST.get("Issuer_L")
-        issuer_S = request.POST.get("Issuer_S")
-        issuer_C = request.POST.get("Issuer_C")
-        # get key usage selections
+        #! get key usage selections from web page -ONLY RESIDENT IN VARIABLE-
         key_usage = request.POST.getlist("KeyUsage")
-        # get extended key usage selections
+        #! get extended key usage selections from web page -ONLY RESIDENT IN VARIABLE-
         extended_Key_Usage = request.POST.getlist("extendedKeyUsage")
-        configP_from_ConfigFile()
-        configP_to_ConfigFile(request)
+        # read issuer attributes from config file
+        issuer_CN = format(configP_ISSUER_ATTRIBUTES["Issuer_CN"])
+        issuer_O = format(configP_ISSUER_ATTRIBUTES["Issuer_O"])
+        issuer_OU = format(configP_ISSUER_ATTRIBUTES["Issuer_OU"])
+        issuer_L = format(configP_ISSUER_ATTRIBUTES["Issuer_L"])
+        issuer_S = format(configP_ISSUER_ATTRIBUTES["Issuer_S"])
+        issuer_C = format(configP_ISSUER_ATTRIBUTES["Issuer_C"])
+        # write private key settings and subject attribute settings to config file
+        configP_PRIVATE_KEY["KeySize"] = private_KeySize
+        configP_PRIVATE_KEY["SigAlg"] = private_SigAlg
+        configP_PRIVATE_KEY["Algorithm"] = private_Algorithm
+        configP_PRIVATE_KEY["Format"] = private_Format
+        # Remove curve data if not using an Elliptic Curve in the cert
+        if private_Algorithm == "EC":
+            configP_PRIVATE_KEY["Curve"] = private_Curve
+        else:
+            configP_PRIVATE_KEY["Curve"] = ""
+        # assign certificate data to configuration writer objects
+        configP_SUBJECT_ATTRIBUTES["Subject_CN"] = subject_CN
+        configP_SUBJECT_ATTRIBUTES["Subject_O"] = subject_O
+        configP_SUBJECT_ATTRIBUTES["Subject_OU"] = subject_OU
+        configP_SUBJECT_ATTRIBUTES["Subject_L"] = subject_L
+        configP_SUBJECT_ATTRIBUTES["Subject_S"] = subject_S
+        configP_SUBJECT_ATTRIBUTES["Subject_C"] = subject_C
+        # commit configuration items to config file
+        with open("settings.ini", "w") as conf:
+            configP_Writer_Object.write(conf)
         fp_NewCert_TimeStamp = time.strftime("%y%m%d_%H%M%S_")
         if request.POST.get("Algorithm", "") == "EC":
             execute_Crypto_Engine_2()
-            from .genkeypair import configP_Writer_Object
-
+            # read generated cert data into memory
             configP_Writer_Object.read("settings.ini")
-            from .genkeypair import configP_CERTIFICATE_DATA
-
             private_to_Webpage = linebreaks(
-                format(configP_CERTIFICATE_DATA["PRIVATE2_DECODED"])
-            )
+                format(configP_CERTIFICATE_DATA["PRIVATE2_DECODED"]))
             public_to_Webpage = linebreaks(
                 format(configP_CERTIFICATE_DATA["PUBLIC2_DECODED"]))
         else:
             execute_Crypto_Engine_1()
-            from .genkeypair import configP_Writer_Object
-
+            # read generated cert data into memory
             configP_Writer_Object.read("settings.ini")
-            from .genkeypair import configP_CERTIFICATE_DATA
-
             private_to_Webpage = linebreaks(
-                format(configP_CERTIFICATE_DATA["PRIVATE1_DECODED"])
-            )
+                format(configP_CERTIFICATE_DATA["PRIVATE1_DECODED"]))
             public_to_Webpage = linebreaks(
                 format(configP_CERTIFICATE_DATA["PUBLIC1_DECODED"]))
         html = (
@@ -196,22 +212,38 @@ def messaging(request):
     return render(request, "messaging.html", {})
 
 
-def new_design(request):
-    # create a dictionary to pass
-    # data to the template
-    context = {"data": "New design sandbox web page",
-               "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-    # return response with template and context
-    return render(request, "new_design.html", context)
-
-
-def test_view(request):
-    # create a dictionary to pass
-    # data to the template
+def app_settings(request):
+    # Assign writer object
+    configP_Writer_Object = ConfigParser()
+    # Read configuration from settings file
+    configP_Writer_Object.read("settings.ini")
+    # Get configuration sections
+    configP_PRIVATE_KEY = configP_Writer_Object["PRIVATE_KEY"]
+    configP_SUBJECT_ATTRIBUTES = configP_Writer_Object["SUBJECT_ATTRIBUTES"]
+    configP_ISSUER_ATTRIBUTES = configP_Writer_Object["ISSUER_ATTRIBUTES"]
+    configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
+    # Get configuration values from file and assign to variables
+    cert_KeySize = format(configP_PRIVATE_KEY["KeySize"])
+    cert_SigAlg = format(configP_PRIVATE_KEY["SigAlg"])
+    cert_Algorithm = format(configP_PRIVATE_KEY["Algorithm"])
+    cert_Curve = format(configP_PRIVATE_KEY["Curve"])
+    cert_Format = format(configP_PRIVATE_KEY["Format"])
+    subject_CN = format(configP_SUBJECT_ATTRIBUTES["Subject_CN"])
+    subject_O = format(configP_SUBJECT_ATTRIBUTES["Subject_O"])
+    subject_OU = format(configP_SUBJECT_ATTRIBUTES["Subject_OU"])
+    subject_L = format(configP_SUBJECT_ATTRIBUTES["Subject_L"])
+    subject_S = format(configP_SUBJECT_ATTRIBUTES["Subject_S"])
+    subject_C = format(configP_SUBJECT_ATTRIBUTES["Subject_C"])
+    issuer_CN = format(configP_ISSUER_ATTRIBUTES["Issuer_CN"])
+    issuer_O = format(configP_ISSUER_ATTRIBUTES["Issuer_O"])
+    issuer_OU = format(configP_ISSUER_ATTRIBUTES["Issuer_OU"])
+    issuer_L = format(configP_ISSUER_ATTRIBUTES["Issuer_L"])
+    issuer_S = format(configP_ISSUER_ATTRIBUTES["Issuer_S"])
+    issuer_C = format(configP_ISSUER_ATTRIBUTES["Issuer_C"])
     context = {"data": "Gfg is the best",
                "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
     # return response with template and context
-    return render(request, "test.html", context)
+    return render(request, "app_settings.html", context)
 
 
 def upload(request):

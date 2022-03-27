@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% load static %}
+
+
+
+<link rel="stylesheet" href="{% static 'css/genkeypair.css' %}">
 
 
 <!-- Sidebar -->
@@ -14,149 +19,201 @@
 <div style="margin-left:15%">
 
 
-    <div class="w3-row w3-padding-64">
-        <div class="w3-twothird w3-container">
-            <h2 class="w3-text-teal">Generate Self-Signed Key Pair</h2>
-        </div>
-    </div>
+    <body>
+        <header>
+            <div class="w3-row w3-padding-64">
+                <div class="w3-twothird w3-container">
+                    <h2 class="w3-text-teal">Generate Self-Signed Key Pair</h2>
+                </div>
+            </div>
+        </header>
 
-    <form method="POST" action="generate_certificate">
-        <div class="breaking">
-            <fieldset>
-                <legend>Private Key</legend>
-                <a>Algorithm</a>
-                <input type="radio" id="RSA" name="Algorithm" value="RSA" required checked="checked">
-                <label for="RSA">RSA</label>
-                <input type="radio" id="DSA" name="Algorithm" value="DSA">
-                <label for="DSA">DSA</label>
-                <input type="radio" id="EC" name="Algorithm" value="EC">
-                <label for="EC">EC</label>
-                <select Name="Curve" Size="1">
-                    <option value="secp521r1"> SECG secp521r1 / NIST P-521 </option>
-                    <option value="secp384r1"> SECG secp384r1 / NIST P-384 </option>
-                    <option value="secp256r1"> SECG secp256r1 / NIST P-256 </option>
-                    <option value="secp256k1"> SECG secp256k1 </option>
-                    <option value="secp224r1"> SECG secp224r1 / NIST P-224 / Prime256v1</option>
-                    <option value="secp192r1"> SECG secp192r1 / NIST P-192 / Prime192v1 </option>
-                    <option value="BrainpoolP512R1"> BrainpoolP512R1 </option>
-                    <option value="BrainpoolP384R1"> BrainpoolP384R1 </option>
-                    <option value="BrainpoolP256R1"> BrainpoolP256R1 </option>
-                </select>
+        <form method="POST" action="generate_certificate">
+            <div class="breaking">
+                <fieldset>
+
+                    <legend>Settings</legend>
+                    <div class="container">
+                        <h4>Algorithm</h4>
+                        <a></a>
+                        <label>
+                            <input type="radio" id="RSA" name="Algorithm" value="RSA" required checked="checked">
+                            <span>RSA</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="DSA" name="Algorithm" value="DSA">
+                            <span>DSA</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="EC" name="Algorithm" value="EC">
+                            <span>EC</span>
+                        </label>
+                    </div>
+                    <div class="container">
+                        <h4>Curve&nbsp;</h4>
+                        <label>
+                            <select Name="Curve" Size="1">
+                                <option value="secp521r1"> SECG secp521r1 / NIST P-521 </option>
+                                <option value="secp384r1"> SECG secp384r1 / NIST P-384 </option>
+                                <option value="secp256r1"> SECG secp256r1 / NIST P-256 </option>
+                                <option value="secp256k1"> SECG secp256k1 </option>
+                                <option value="secp224r1"> SECG secp224r1 / NIST P-224 / Prime256v1</option>
+                                <option value="secp192r1"> SECG secp192r1 / NIST P-192 / Prime192v1 </option>
+                                <option value="BrainpoolP512R1"> BrainpoolP512R1 </option>
+                                <option value="BrainpoolP384R1"> BrainpoolP384R1 </option>
+                                <option value="BrainpoolP256R1"> BrainpoolP256R1 </option>
+                            </select>
+                        </label>
+                    </div>
+
+                    <div class="container">
+                        <h4>Key Size</h4>
+                        <label>
+                            <input type="radio" id="512" name="KeySize" value="512" required>
+                            <span>512-bit</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="1024" name="KeySize" value="1024">
+                            <span>1024-bits</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="2048" name="KeySize" value="2048" checked="checked">
+                            <span>2048-bits</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="4096" name="KeySize" value="4096">
+                            <span>4096-bits</span>
+                        </label>
+                    </div>
+
+                    <div class="container">
+                        <h4>Signature</h4>
+                        <label>
+                            <input type="radio" id="sha1" name="SigAlg" value="sha1" required>
+                            <span>SHA-1</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="sha256" name="SigAlg" value="sha256" checked="checked">
+                            <span>SHA-256</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="sha384" name="SigAlg" value="sha384">
+                            <span>SHA-384</span>
+                        </label>
+                        <label>
+                            <input type="radio" id="sha512" name="SigAlg" value="sha512">
+                            <span>SHA-384</span>
+                        </label>
+                    </div>
+
+                    <div class="container">
+                        <h4>Format</h4>
+                        <label>
+                            <input type="radio" id="pkcs8" name="Format" value="pkcs8" required checked="checked">
+                            <span>PKCS#8</span>
+                        </label>
+                    </div>
+
+                </fieldset>
+
+                <fieldset>
+
+                    <h4>Subject Attributes</h4>
+
+                    <input type="checkbox" id="no_Sub_Add" name="no_Sub_Add" value="no_Sub_Add" checked="checked">
+                    <label for="no_Sub_Add">Do Not Add Subject Address</label><br>
+
+                    <div class="form-group">
+                        <span>Common Name</span>
+                        <input class="form-field" type="text" id="Subject_CN" name="Subject_CN"
+                            value="mysecuresite.com">
+                    </div>
+                    <div class="form-group">
+                        <span>Organization</span>
+                        <input class="form-field" type="text" id="Subject_O" name="Subject_O" value="My Company, Inc.">
+                    </div>
+                    <div class="form-group">
+                        <span>Organization Unit</span>
+                        <input class="form-field" type="text" id="Subject_OU" name="Subject_OU" value="NetOps">
+                    </div>
+                    <div class="form-group">
+                        <span>Locality</span>
+                        <input class="form-field" type="text" id="Subject_L" name="Subject_L" value="Miami">
+                    </div>
+                    <div class="form-group">
+                        <span>State</span>
+                        <input class="form-field" type="text" id="Subject_S" name="Subject_S" value="Florida">
+                    </div>
+                    <div class="form-group">
+                        <span>Country</span>
+                        <input class="form-field" type="text" id="Subject_C" name="Subject_C" value="US">
+                    </div>
+
+                    <p></p>
+                    <select Name="SAN" Size="1">
+                        <option value="SAN_DNS"> DNS </option>
+                        <option value="DNS_IP"> IP </option>
+                        <option value="DNS_URI"> URI </option>
+                        <option value="DNS_email"> email </option>
+                        <option value="DNS_RID"> RID </option>
+                        <option value="DNS_dirName"> dirName </option>
+                        <option value="DNS_otherName"> otherName </option>
+                    </select>
+                    <label>Subject Alt Names <input type="text"></label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Key Usage</legend>
+                    <input type="checkbox" id="digital_signature" name="KeyUsage" value="digital_signature"
+                        checked="checked">
+                    <label for="digital_signature">Digital Signature</label>
+                    <input type="checkbox" id="content_commitment" name="KeyUsage" value="content_commitment">
+                    <label for="content_commitment">Content Commitment</label>
+                    <input type="checkbox" id="key_encipherment" name="KeyUsage" value="key_encipherment"
+                        checked="checked">
+                    <label for="key_encipherment">Key Encipherment</label>
+                    <input type="checkbox" id="data_encipherment" name="KeyUsage" value="data_encipherment">
+                    <label for="data_encipherment">Data Encipherment</label>
+                    <input type="checkbox" id="key_agreement" name="KeyUsage" value="key_agreement">
+                    <label for="key_agreement">Key Agreement</label>
+                    <input type="checkbox" id="key_cert_sign" name="KeyUsage" value="key_cert_sign">
+                    <label for="key_cert_sign">Certificate Signing</label>
+                    <input type="checkbox" id="crl_sign" name="KeyUsage" value="crl_sign">
+                    <label for="crl_sign">CRL Signing</label>
+                    <input type="checkbox" id="encipher_only" name="KeyUsage" value="encipher_only">
+                    <label for="encipher_only">Encipher Only</label>
+                    <input type="checkbox" id="decipher_only" name="KeyUsage" value="decipher_only">
+                    <label for="decipher_only">Decipher Only</label>
+                </fieldset>
+
+                <fieldset>
+                    <legend>Extended Key Usage</legend>
+                    <input type="checkbox" id="id_kp_serverAuth" name="extendedKeyUsage" value="id_kp_serverAuth"
+                        checked="checked">
+                    <label for="id_kp_serverAuth">TLS WWW Server Authentication</label><br>
+                    <input type="checkbox" id="id_kp_clientAuth" name="extendedKeyUsage" value="id_kp_clientAuth"
+                        checked="checked">
+                    <label for="id_kp_clientAuth">TLS WWW Client Authentication</label><br>
+                    <input type="checkbox" id="id_kp_codeSigning" name="extendedKeyUsage" value="id_kp_codeSigning">
+                    <label for="id_kp_codeSigning">Sign (Downloadable) Executable Code</label><br>
+                    <input type="checkbox" id="id_kp_emailProtection" name="extendedKeyUsage"
+                        value="id_kp_emailProtection">
+                    <label for="id_kp_emailProtection">Email Protection</label><br>
+                    <input type="checkbox" id="id_kp_timeStamping" name="extendedKeyUsage" value="id_kp_timeStamping">
+                    <label for="id_kp_timeStamping">Timestamping</label><br>
+                    <input type="checkbox" id="id_kp_OCSPSigning" name="extendedKeyUsage" value="id_kp_OCSPSigning">
+                    <label for="id_kp_OCSPSigning">OCSP Signing</label><br>
+                </fieldset>
+
+                <p></p><button type="submit" class="button is-success is-fullwidth is-medium mt-5" name="run_script"
+                    value="genneyThatCert">Generate Key Pair (Base64 x509)</button>
                 <p></p>
-                <a>Key Size</a>
-                <input type="radio" id="512" name="KeySize" value="512" required>
-                <label for="512">512 bit</label>
-                <input type="radio" id="1024" name="KeySize" value="1024">
-                <label for="1024">1024 bit</label>
-                <input type="radio" id="2048" name="KeySize" value="2048" checked="checked">
-                <label for="2048">2048 bit</label>
-                <input type="radio" id="4096" name="KeySize" value="4096">
-                <label for="4096">4096 bit</label>
-                <p></p>
-                <a>Signature</a>
-                <input type="radio" id="sha1" name="SigAlg" value="sha1" required>
-                <label for="sha1">SHA-1</label>
-                <input type="radio" id="sha256" name="SigAlg" value="sha256" checked="checked">
-                <label for="sha256">SHA-256</label>
-                <input type="radio" id="sha384" name="SigAlg" value="sha384">
-                <label for="sha384">SHA-384</label>
-                <input type="radio" id="sha512" name="SigAlg" value="sha512">
-                <label for="sha512">SHA-512</label>
-                <p></p>
-                <a">Format</a>
-                    <input type="radio" id="pkcs8" name="Format" value="pkcs8" required checked="checked">
-                    <label for="pkcs8">PKCS#8</label>
-            </fieldset>
 
-            <fieldset>
-                <legend>Subject Attributes</legend>
-                <input type="checkbox" id="no_Sub_Add" name="no_Sub_Add" value="no_Sub_Add" checked="checked">
-                <label for="no_Sub_Add">Do Not Add Subject Address</label><br>
-                <label>Common Name <input type="text" name="Subject_CN" id="Subject_CN" value="localhost""></label><p></p>
-            <label>Organization <input type=" text" name="Subject_O" id="Subject_O" value="Organization"></label>
-                <label>Organization Unit <input type="text" name="Subject_OU" id="Subject_OU"
-                        value="Network Operations"></label>
-                <p></p>
-                <label>Locality <input type="text" name="Subject_L" id="Subject_L" value="City"></label>
-                <label>State <input type="text" name="Subject_S" id="Subject_S" value="State"></label>
-                <label>Country <input type="text" name="Subject_C" id="Subject_C" value="US"></label><br>
-                <p></p>
-                <select Name="SAN" Size="1">
-                    <option value="SAN_DNS"> DNS </option>
-                    <option value="DNS_IP"> IP </option>
-                    <option value="DNS_URI"> URI </option>
-                    <option value="DNS_email"> email </option>
-                    <option value="DNS_RID"> RID </option>
-                    <option value="DNS_dirName"> dirName </option>
-                    <option value="DNS_otherName"> otherName </option>
-                </select>
-                <label>Subject Alt Names <input type="text"></label>
-            </fieldset>
+                {% csrf_token %}
 
-            <fieldset>
-                <legend>Issuer Attributes</legend>
-                <input type="checkbox" id="no_Iss_Add" name="no_Iss_Add" value="no_Iss_Add" checked="checked">
-                <label for="no_Iss_Add">Do Not Add Issuer Address</label><br>
-                <label>Common Name <input type="text" name="Issuer_CN" id="Issuer_CN" value="localhost"></label>
-                <p></p>
-                <label>Organization <input type=" text" name="Issuer_O" id="Issuer_O" value="Organization"></label>
-                <label>Organization Unit <input type="text" name="Issuer_OU" id="Issuer_OU"
-                        value="Network Operations"></label>
-                <p></p>
-                <label>Locality <input type="text" name="Issuer_L" id="Issuer_L" value="City"></label>
-                <label>State <input type="text" name="Issuer_S" id="Issuer_S" value="State"></label>
-                <label>Country <input type="text" name="Issuer_C" id="Issuer_C" value="US"></label><br>
-            </fieldset>
+            </div>
+        </form>
+    </body>
 
-
-            <fieldset>
-                <legend>Key Usage</legend>
-                <input type="checkbox" id="digital_signature" name="KeyUsage" value="digital_signature"
-                    checked="checked">
-                <label for="digital_signature">Digital Signature</label>
-                <input type="checkbox" id="content_commitment" name="KeyUsage" value="content_commitment">
-                <label for="content_commitment">Content Commitment</label>
-                <input type="checkbox" id="key_encipherment" name="KeyUsage" value="key_encipherment" checked="checked">
-                <label for="key_encipherment">Key Encipherment</label>
-                <input type="checkbox" id="data_encipherment" name="KeyUsage" value="data_encipherment">
-                <label for="data_encipherment">Data Encipherment</label>
-                <input type="checkbox" id="key_agreement" name="KeyUsage" value="key_agreement">
-                <label for="key_agreement">Key Agreement</label>
-                <input type="checkbox" id="key_cert_sign" name="KeyUsage" value="key_cert_sign">
-                <label for="key_cert_sign">Certificate Signing</label>
-                <input type="checkbox" id="crl_sign" name="KeyUsage" value="crl_sign">
-                <label for="crl_sign">CRL Signing</label>
-                <input type="checkbox" id="encipher_only" name="KeyUsage" value="encipher_only">
-                <label for="encipher_only">Encipher Only</label>
-                <input type="checkbox" id="decipher_only" name="KeyUsage" value="decipher_only">
-                <label for="decipher_only">Decipher Only</label>
-            </fieldset>
-
-            <fieldset>
-                <legend>Extended Key Usage</legend>
-                <input type="checkbox" id="id_kp_serverAuth" name="extendedKeyUsage" value="id_kp_serverAuth"
-                    checked="checked">
-                <label for="id_kp_serverAuth">TLS WWW Server Authentication</label><br>
-                <input type="checkbox" id="id_kp_clientAuth" name="extendedKeyUsage" value="id_kp_clientAuth"
-                    checked="checked">
-                <label for="id_kp_clientAuth">TLS WWW Client Authentication</label><br>
-                <input type="checkbox" id="id_kp_codeSigning" name="extendedKeyUsage" value="id_kp_codeSigning">
-                <label for="id_kp_codeSigning">Sign (Downloadable) Executable Code</label><br>
-                <input type="checkbox" id="id_kp_emailProtection" name="extendedKeyUsage" value="id_kp_emailProtection">
-                <label for="id_kp_emailProtection">Email Protection</label><br>
-                <input type="checkbox" id="id_kp_timeStamping" name="extendedKeyUsage" value="id_kp_timeStamping">
-                <label for="id_kp_timeStamping">Timestamping</label><br>
-                <input type="checkbox" id="id_kp_OCSPSigning" name="extendedKeyUsage" value="id_kp_OCSPSigning">
-                <label for="id_kp_OCSPSigning">OCSP Signing</label><br>
-            </fieldset>
-
-            <p></p><button type="submit" class="button is-success is-fullwidth is-medium mt-5" name="run_script"
-                value="genneyThatCert">Generate Key Pair (Base64 x509)</button>
-            <p></p>
-            {% csrf_token %}
-
-    </form>
-
-</div>
-
-{% endblock content %}
+    </html>
+    {% endblock content %}

@@ -18,70 +18,6 @@ logger = logging.getLogger(__name__)
 # todo: setup logic for extended key usage
 
 
-def configP_from_ConfigFile():
-    logging.info("FUNCTION configP_from_ConfigFile")
-    global configP_Writer_Object, configP_PRIVATE_KEY, configP_SUBJECT_ATTRIBUTES
-    global configP_ISSUER_ATTRIBUTES, configP_CERTIFICATE_DATA
-    # Assign primary config writer object
-    configP_Writer_Object = ConfigParser()
-    # Read configuration from snettings file
-    configP_Writer_Object.read("settings.ini")
-    # Get configuration sections
-    configP_PRIVATE_KEY = configP_Writer_Object["PRIVATE_KEY"]
-    configP_SUBJECT_ATTRIBUTES = configP_Writer_Object["SUBJECT_ATTRIBUTES"]
-    configP_ISSUER_ATTRIBUTES = configP_Writer_Object["ISSUER_ATTRIBUTES"]
-    configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
-    # Get configuration values from file and assign to variables
-    cert_KeySize = format(configP_PRIVATE_KEY["KeySize"])
-    cert_SigAlg = format(configP_PRIVATE_KEY["SigAlg"])
-    cert_Algorithm = format(configP_PRIVATE_KEY["Algorithm"])
-    cert_Curve = format(configP_PRIVATE_KEY["Curve"])
-    cert_Format = format(configP_PRIVATE_KEY["Format"])
-    subject_CN = format(configP_SUBJECT_ATTRIBUTES["Subject_CN"])
-    subject_O = format(configP_SUBJECT_ATTRIBUTES["Subject_O"])
-    subject_OU = format(configP_SUBJECT_ATTRIBUTES["Subject_OU"])
-    subject_L = format(configP_SUBJECT_ATTRIBUTES["Subject_L"])
-    subject_S = format(configP_SUBJECT_ATTRIBUTES["Subject_S"])
-    subject_C = format(configP_SUBJECT_ATTRIBUTES["Subject_C"])
-    issuer_CN = format(configP_ISSUER_ATTRIBUTES["Issuer_CN"])
-    issuer_O = format(configP_ISSUER_ATTRIBUTES["Issuer_O"])
-    issuer_OU = format(configP_ISSUER_ATTRIBUTES["Issuer_OU"])
-    issuer_L = format(configP_ISSUER_ATTRIBUTES["Issuer_L"])
-    issuer_S = format(configP_ISSUER_ATTRIBUTES["Issuer_S"])
-    issuer_C = format(configP_ISSUER_ATTRIBUTES["Issuer_C"])
-
-
-def configP_to_ConfigFile(request):
-    logging.info("FUNCTION configP_to_ConfigFile")
-    from .views import private_Algorithm, private_Curve, private_Format, private_KeySize, private_SigAlg
-    from .views import issuer_C, issuer_CN, issuer_L, issuer_O, issuer_OU, issuer_S
-    from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
-    configP_PRIVATE_KEY["KeySize"] = private_KeySize
-    configP_PRIVATE_KEY["SigAlg"] = private_SigAlg
-    configP_PRIVATE_KEY["Algorithm"] = private_Algorithm
-    configP_PRIVATE_KEY["Format"] = private_Format
-    configP_SUBJECT_ATTRIBUTES["Subject_CN"] = subject_CN
-    configP_SUBJECT_ATTRIBUTES["Subject_O"] = subject_O
-    configP_SUBJECT_ATTRIBUTES["Subject_OU"] = subject_OU
-    configP_SUBJECT_ATTRIBUTES["Subject_L"] = subject_L
-    configP_SUBJECT_ATTRIBUTES["Subject_S"] = subject_S
-    configP_SUBJECT_ATTRIBUTES["Subject_C"] = subject_C
-    configP_ISSUER_ATTRIBUTES["Issuer_CN"] = issuer_CN
-    configP_ISSUER_ATTRIBUTES["Issuer_O"] = issuer_O
-    configP_ISSUER_ATTRIBUTES["Issuer_OU"] = issuer_OU
-    configP_ISSUER_ATTRIBUTES["Issuer_L"] = issuer_L
-    configP_ISSUER_ATTRIBUTES["Issuer_S"] = issuer_S
-    configP_ISSUER_ATTRIBUTES["Issuer_C"] = issuer_C
-    # Remove curve data if not using an Elliptic Curve in the cert
-    if private_Algorithm == "EC":
-        configP_PRIVATE_KEY["Curve"] = private_Curve
-    else:
-        configP_PRIVATE_KEY["Curve"] = ""
-    # Commit settings values to config file
-    with open("settings.ini", "w") as conf:
-        configP_Writer_Object.write(conf)
-
-
 def file_Processing(fp_NewCert_TimeStamp):
     logging.info("FUNCTION file_Processing")
     from .views import subject_CN
@@ -116,8 +52,8 @@ def crypto_Engine_1():
     logging.info("FUNCTION crypto_Engine_1")
     import random
     from OpenSSL import crypto
-    from .views import private_Curve, private_Format, private_KeySize, private_SigAlg
-    from .views import issuer_C, issuer_CN, issuer_L, issuer_O, issuer_OU, issuer_S
+    from .views import private_Format, private_KeySize, private_SigAlg
+    from .views import issuer_CN, issuer_OU, issuer_O, issuer_L, issuer_S, issuer_C
     from .views import no_issuer_Address, no_subject_Address, private_Algorithm
     from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
     private_key = crypto.PKey()
@@ -338,14 +274,20 @@ def crypto_Engine_2():
 
 def execute_Crypto_Engine_1():
     logging.info("FUNCTION execute_Crypto_Engine_1")
+    # initialize configuration parser
+    configP_Writer_Object = ConfigParser()
+    configP_Writer_Object.read("settings.ini")
     raw_Certs1 = crypto_Engine_1()
     raw_Certs_Listed1 = list(raw_Certs1)
     private1 = raw_Certs_Listed1[1]
     public1 = raw_Certs_Listed1[0]
     private1_Decoded = private1.decode()
     public1_Decoded = public1.decode()
+    # assign certificate data to configuration writer objects
+    configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
     configP_CERTIFICATE_DATA["PRIVATE1_DECODED"] = private1_Decoded
     configP_CERTIFICATE_DATA["PUBLIC1_DECODED"] = public1_Decoded
+    # commit certificate data to configuration file
     with open("settings.ini", "w") as conf:
         configP_Writer_Object.write(conf)
     fileA1 = open("private.key", "w")
@@ -358,14 +300,20 @@ def execute_Crypto_Engine_1():
 
 def execute_Crypto_Engine_2():
     logging.info("FUNCTION execute_Crypto_Engine_2")
+    # initialize configuration parser
+    configP_Writer_Object = ConfigParser()
+    configP_Writer_Object.read("settings.ini")
     raw_Certs2 = crypto_Engine_2()
     raw_Certs_Listed2 = list(raw_Certs2)
     private2 = raw_Certs_Listed2[1]
     public2 = raw_Certs_Listed2[0]
     private2_Decoded = private2.decode()
     public2_Decoded = public2.decode()
+    # assign certificate data to configuration writer objects
+    configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
     configP_CERTIFICATE_DATA["PRIVATE2_DECODED"] = private2_Decoded
     configP_CERTIFICATE_DATA["PUBLIC2_DECODED"] = public2_Decoded
+    # commit certificate data to configuration file
     with open("settings.ini", "w") as conf:
         configP_Writer_Object.write(conf)
     fileB1 = open("private.key", "w")

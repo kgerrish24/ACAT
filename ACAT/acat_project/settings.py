@@ -134,50 +134,50 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Logging Configuration
 
 
-LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    # $ LOGGER FORMATTERS
-    'formatters': {
-        'verbose': {
-            'format': '[VERBOSE] {levelname} {asctime} {module} {process:d} {thread:d} {message}',
-            'style': '{',
-        },
-        'simple': {
-            'format': '[SIMPLE] {levelname} {message}',
-            'style': '{',
-        },
-    },
-    # $ LOGGER HANDLERS
-    'handlers': {
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': 'error.log',
-            'formatter': 'verbose',
-        },
-        'console': {
-            'level': 'INFO',
-            'class': 'logging.StreamHandler',
-            'formatter': 'verbose'
-        }
-    },
-    # $ LOGGER MAPPING
-    'loggers': {
-        '': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': True,
-        },
-        'acat_app': {
-            'handlers': ['console'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
-            'propagate': False,
-        },
-        'django': {
-            'handlers': ['file'],
-            'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
-            'propagate': False,
-        },
-    },
-}
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     # $ LOGGER FORMATTERS
+#     'formatters': {
+#         'verbose': {
+#             'format': '[VERBOSE] {levelname} {asctime} {module} {process:d} {thread:d} {message}',
+#             'style': '{',
+#         },
+#         'simple': {
+#             'format': '[SIMPLE] {levelname} {message}',
+#             'style': '{',
+#         },
+#     },
+#     # $ LOGGER HANDLERS
+#     'handlers': {
+#         'file': {
+#             'level': 'ERROR',
+#             'class': 'logging.FileHandler',
+#             'filename': 'error.log',
+#             'formatter': 'verbose',
+#         },
+#         'console': {
+#             'level': 'INFO',
+#             'class': 'logging.StreamHandler',
+#             'formatter': 'verbose'
+#         }
+#     },
+#     # $ LOGGER MAPPING
+#     'loggers': {
+#         '': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+#             'propagate': True,
+#         },
+#         'acat_app': {
+#             'handlers': ['console'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+#             'propagate': False,
+#         },
+#         'django': {
+#             'handlers': ['file'],
+#             'level': os.getenv('DJANGO_LOG_LEVEL', 'ERROR'),
+#             'propagate': False,
+#         },
+#     },
+# }
