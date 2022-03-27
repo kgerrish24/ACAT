@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+    <h3 class="w3-bar-item">Menu</h3>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    <a href="#" class="w3-bar-item w3-button">Link 3</a>
+</div>
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+
+    <div class="w3-row w3-padding-64">
+        <div class="w3-twothird w3-container">
+            <h2 class="w3-text-teal">Encrypted Messaging</h2>
+        </div>
+    </div>
+
+    <form method="POST" action="messaging">
+        <fieldset>
+            <legend>Fernet Symmetric Authenticated Cryptography</legend>
+            <a>128-bit AES CBC Encryption with HMAC SHA256 Authentication</a><br><br>
+            <input type="submit" class="button is-success is-fullwidth is-medium mt-5" name="execute_encryption"
+                value="Encrypt">
+            <input type="submit" class="button is-success is-fullwidth is-medium mt-5" name="execute_decryption"
+                value="Decrypt"><br><br>
+            <label for="plaintextMessage">Input Encrypted or Plaintext Message</label><br>
+            <textarea id="plaintextMessage" name="plaintextMessage" rows="4" cols="70"></textarea><br>
+            <label for="decryptionKey">Input Decryption Key</label><br>
+            <textarea id="decryptionKey" name="decryptionKey" rows="2" cols="70"></textarea><br>
+            <br>
+
+            {% csrf_token %}
+
+            <div class="breaking">
+                <div class="w3-container">
+                    <div class="w3-container w3-medium">
+                        <div class="w3-left-align">
+                            <label for="encryption_key"><b>Encryption Key :</b> {{ encryption_key }} </label><br>
+                            <label for="decryption_key"><b>Decryption Key :</b> {{ decryption_key }} </label><br>
+                            <label for="encrypted_message"><b>Encrypted Message :</b> {{ encrypted_message }}
+                            </label><br>
+                            <label for="decrypted_message"><b>Decrypted Message :</b> {{ decrypted_message }}
+                            </label><br>
+                            <p></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </form>
+
+
+    {% endblock content %}

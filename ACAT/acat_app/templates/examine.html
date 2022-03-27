@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+    <h3 class="w3-bar-item">Menu</h3>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    <a href="#" class="w3-bar-item w3-button">Link 3</a>
+</div>
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+
+    <div class="w3-row w3-padding-64">
+        <div class="w3-twothird w3-container">
+            <h2 class="w3-text-teal">Examine Encrypted Content</h2>
+        </div>
+    </div>
+
+    <button class="button"><a href="{% url 'examine'%}">Examine File</a></button>
+    <button class="button"><a href="{% url 'examine'%}">Examine Clipboard</a></button>
+    <button class="button"><a href="{% url 'examine'%}">Examine SSL</a></button>
+    <button class="button"><a href="{% url 'examine'%}">Detect File Type</a></button>
+    <p></p><br><br><br>
+    {% endblock content %}

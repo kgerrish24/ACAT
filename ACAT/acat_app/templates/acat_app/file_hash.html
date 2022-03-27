@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+    <h3 class="w3-bar-item">Menu</h3>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    <a href="#" class="w3-bar-item w3-button">Link 3</a>
+</div>
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+
+    <div class="w3-row w3-padding-64">
+        <div class="w3-twothird w3-container">
+            <h2 class="w3-text-teal">File Hashing</h2>
+        </div>
+    </div>
+
+
+
+
+
+    
+    <div class="breaking">
+        <div class="w3-container w3-medium">
+            <fieldset>
+                <legend>Select File</legend>
+                <div class="container">
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <input type="file" name="upload" accept=".doc, .docx, .pdf, .txt">
+                        <br>
+                        <button class="btn btn-dark my-4" type="submit">Submit</button>
+
+
+                        <!--See File Uploaded-->
+                        <div class="row">
+                            {% if uploaded_file_url %}
+                            <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
+                                <p>Uploaded to:<a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
+                                <a class="btn btn-dark my-4" href="/">Return to Homepage</a>
+                                {% else %}
+                                <p>No files added.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                </div>
+        </div>
+        </fieldset>
+
+        <div class="breaking">
+            <div class="w3-container">
+                <div class="w3-container w3-medium">
+                    <div class="w3-left-align"><br>
+                        <label for="cp_hash_Type"><b>Hash Type : </b> {{ cp_hash_Type }} </label><br>
+                        <label for="cp_hash_Value"><b>File Hash : </b> {{ cp_hash_Value }} </label><br>
+                        </label><br>
+                        <p></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="breaking">
+            <div class="w3-container w3-medium">
+                <fieldset>
+                    <legend>Hashing Algorithm (Python Guaranteed)</legend>
+                    <fieldset>
+                        <legend>MESSAGE DIGEST 5</legend>
+                        <input type="radio" id="MD5" name="algorithm" value="md5">
+                        <label for="MD5">MD5</label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>SHAKE (Variants of SHA3-256, SHA3-512</legend>
+                        <input type="radio" id="SHAKE128" name="algorithm" value="shake_128">
+                        <label for="SHAKE128">SHAKE128</label>
+                        <input type="radio" id="SHAKE256" name="algorithm" value="shake_256">
+                        <label for="SHAKE256">SHAKE256</label>
+                        <label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Variable Length Digest : <input type="number" name="fh_shake_digest" id="fh_shake_digest" value=""></label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>BLAKE2 (Based on SHA3)</legend>
+                        <input type="radio" id="Blake2s" name="algorithm" value="blake2s">
+                        <label for="Blake2s">Blake2s</label>
+                        <input type="radio" id="Blake2b" name="algorithm" value="blake2b">
+                        <label for="Blake2b">Blake2b</label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>SHA1</legend>
+                        <input type="radio" id="SHA1" name="algorithm" value="sha1">
+                        <label for="SHA1">SHA1</label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>SHA2</legend>
+                        <input type="radio" id="SHA224" name="algorithm" value="sha224">
+                        <label for="SHA224">SHA224</label>
+                        <input type="radio" id="SHA256" name="algorithm" value="sha256" checked="checked">
+                        <label for="SHA256">SHA256</label>
+                        <input type="radio" id="SHA384" name="algorithm" value="sha384">
+                        <label for="SHA384">SHA384</label>
+                        <input type="radio" id="SHA512" name="algorithm" value="sha512">
+                        <label for="SHA512">SHA512</label>
+                    </fieldset>
+
+                    <fieldset>
+                        <legend>SHA3</legend>
+                        <input type="radio" id="SHA3_224" name="algorithm" value="sha3_224">
+                        <label for="SHA3_224">SHA3_224</label>
+                        <input type="radio" id="SHA3_256" name="algorithm" value="sha3_256">
+                        <label for="SHA3_256">SHA3_256</label>
+                        <input type="radio" id="SHA3_384" name="algorithm" value="sha3_384">
+                        <label for="SHA3_384">SHA3_384</label>
+                        <input type="radio" id="SHA3_512" name="algorithm" value="sha3_512">
+                        <label for="SHA3_512">SHA3_512</label>
+                    </fieldset>
+
+
+                    <fieldset>
+                        <legend>Adler32</legend>
+                        <input type="radio" id="Adler32" name="algorithm" value="adler32">
+                        <label for="Adler32">Adler32</label>
+                    </fieldset>
+
+                </fieldset>
+            </div>
+
+
+        </div>
+        </form>
+
+
+
+
+        {% endblock content %}

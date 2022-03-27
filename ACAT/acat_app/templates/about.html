@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+    <h3 class="w3-bar-item">Menu</h3>
+    <a href="#" class="w3-bar-item w3-button">Link 1</a>
+    <a href="#" class="w3-bar-item w3-button">Link 2</a>
+    <a href="#" class="w3-bar-item w3-button">Link 3</a>
+</div>
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+
+    <div class="w3-row w3-padding-64">
+        <div class="w3-twothird w3-container">
+            <h1 class="w3-text-teal">Advanced Cryptographic Admin Tool</h1>
+        </div>
+    </div>
+
+
+    <a>Coded with </a><a href="https://python.org">Python 3.9.11</a><a> using </a>
+    <a href="https://docs.python.org/3.9/library/configparser.html">pycparser==2.21</a> |
+    <a href="https://cryptography.io/">cryptography==36.0.1</a> | <a
+        href="https://docs.python.org/3.9/library/hashlib.html">hashlib==</a> |
+    <a href="https://pypi.org/project/pyOpenSSL/">pyopenssl==22.0.0</a><br><br>
+
+
+
+    <h6><b>pyOpenSSL==22.0.0</b></h6>
+    <a>Base-64 x.509 Certificate Generator (RSA | DSA)</a><br><br>
+
+    <h6><b>cryptography==36.0.1</b></h6>
+    <a>Base-64 x.509 Certificate Generator (EC)</a><br><br>
+
+    <h6><b>cryptography==36.0.1</b></h6>
+    <a>Encrypted Messaging using Fernet Symmetric Authenticated Cryptography (AES-CBC | HMAC-SHA256)</a><br><br>
+
+
+    <h6><b>hashlib==</b></h6>
+    <a>File Hash Generator (SHA1 SHA2 SHA3 | Blake2s/2b | SHAKE128/256 | MD5)</a><br><br>
+
+    <h6><b>cryptography==36.0.1</b></h6>
+    <a>Signing EC</a>
+    <a>Curves SECP256R1, SECP384R1, SECP192R1, SECP521R1, SECP256K1, SECP224R1, BrainpoolP512R1, BrainpoolP384R1,
+        BrainpoolP256R1</a><br><br>
+
+    <h6><b>pyOpenSSL==22.0.0</b></h6>
+    <a>Signing RSA, DSA</a><br>
+    <a>Hashing SHA1, SHA256, SHA384, SHA512</a><br><br>
+
+
+    <br><br><br><br><br><br><br><br>
+    <p><a>Certain information provided by Wikipedia: <a
+                href="https://en.wikipedia.org/wiki/Cryptography">https://en.wikipedia.org/wiki/Cryptography</a></a>
+    </p>
+
+    {% endblock content %}
