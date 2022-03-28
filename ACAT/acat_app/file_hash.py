@@ -2,12 +2,10 @@
 
 import hashlib
 import logging
-from configparser import ConfigParser
 from .app_settings import *
 
 
 # todo: option to display all hashes
-# todo: debug adler32
 # todo: debug blake2
 
 

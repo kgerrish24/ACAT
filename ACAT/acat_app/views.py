@@ -7,7 +7,6 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.html import linebreaks
-from configparser import ConfigParser
 from .file_hash import *
 from .genkeypair import *
 from .app_settings import *
@@ -27,6 +26,18 @@ logger = logging.getLogger(__name__)
 def about(request):
     logging.info("FUNCTION HTML about")
     return render(request, "about.html", {})
+
+
+def app_settings(request):
+    configParser_read_all_configFile()
+    context = {"issuer_attributes": [issuer_CN, issuer_OU,
+                                     issuer_O, issuer_L, issuer_S, issuer_C],
+               "subject_attributes": [subject_CN, subject_OU, subject_O, subject_L, subject_S, subject_C],
+               "private_key": [private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format],
+               "hash_file": [hash_type, hash_value]
+               }
+    # return response with template and context
+    return render(request, "app_settings.html", context)
 
 
 def index(request):
@@ -210,40 +221,6 @@ def messaging(request):
         return render(request, "messaging.html", context)
     # return response with template
     return render(request, "messaging.html", {})
-
-
-def app_settings(request):
-    # Assign writer object
-    configP_Writer_Object = ConfigParser()
-    # Read configuration from settings file
-    configP_Writer_Object.read("settings.ini")
-    # Get configuration sections
-    configP_PRIVATE_KEY = configP_Writer_Object["PRIVATE_KEY"]
-    configP_SUBJECT_ATTRIBUTES = configP_Writer_Object["SUBJECT_ATTRIBUTES"]
-    configP_ISSUER_ATTRIBUTES = configP_Writer_Object["ISSUER_ATTRIBUTES"]
-    configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
-    # Get configuration values from file and assign to variables
-    cert_KeySize = format(configP_PRIVATE_KEY["KeySize"])
-    cert_SigAlg = format(configP_PRIVATE_KEY["SigAlg"])
-    cert_Algorithm = format(configP_PRIVATE_KEY["Algorithm"])
-    cert_Curve = format(configP_PRIVATE_KEY["Curve"])
-    cert_Format = format(configP_PRIVATE_KEY["Format"])
-    subject_CN = format(configP_SUBJECT_ATTRIBUTES["Subject_CN"])
-    subject_O = format(configP_SUBJECT_ATTRIBUTES["Subject_O"])
-    subject_OU = format(configP_SUBJECT_ATTRIBUTES["Subject_OU"])
-    subject_L = format(configP_SUBJECT_ATTRIBUTES["Subject_L"])
-    subject_S = format(configP_SUBJECT_ATTRIBUTES["Subject_S"])
-    subject_C = format(configP_SUBJECT_ATTRIBUTES["Subject_C"])
-    issuer_CN = format(configP_ISSUER_ATTRIBUTES["Issuer_CN"])
-    issuer_O = format(configP_ISSUER_ATTRIBUTES["Issuer_O"])
-    issuer_OU = format(configP_ISSUER_ATTRIBUTES["Issuer_OU"])
-    issuer_L = format(configP_ISSUER_ATTRIBUTES["Issuer_L"])
-    issuer_S = format(configP_ISSUER_ATTRIBUTES["Issuer_S"])
-    issuer_C = format(configP_ISSUER_ATTRIBUTES["Issuer_C"])
-    context = {"data": "Gfg is the best",
-               "list": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
-    # return response with template and context
-    return render(request, "app_settings.html", context)
 
 
 def upload(request):

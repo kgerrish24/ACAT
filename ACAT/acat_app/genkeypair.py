@@ -309,7 +309,7 @@ def execute_Crypto_Engine_2():
     public2 = raw_Certs_Listed2[0]
     private2_Decoded = private2.decode()
     public2_Decoded = public2.decode()
-    # assign certificate data to configuration writer objects
+    # assign certificate data to config objects
     configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
     configP_CERTIFICATE_DATA["PRIVATE2_DECODED"] = private2_Decoded
     configP_CERTIFICATE_DATA["PUBLIC2_DECODED"] = public2_Decoded
