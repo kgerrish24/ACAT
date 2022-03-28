@@ -3,4 +3,4 @@
 
 # from django.test import TestCase
 
-from .app_settings import *
+import acat_app.app_settings as appset

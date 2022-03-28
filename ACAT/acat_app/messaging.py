@@ -2,7 +2,7 @@
 
 import logging
 from cryptography.fernet import Fernet
-from .app_settings import *
+import acat_app.app_settings as appset
 
 
 # todo: resolve leading and trailing character formatting

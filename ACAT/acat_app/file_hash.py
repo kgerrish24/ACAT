@@ -2,7 +2,8 @@
 
 import hashlib
 import logging
-from .app_settings import *
+import configparser as ConfigParser
+import acat_app.app_settings as appset
 
 
 # todo: option to display all hashes

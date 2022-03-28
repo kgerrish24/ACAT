@@ -6,7 +6,7 @@ import logging
 import os
 import shutil
 from configparser import ConfigParser
-from .app_settings import *
+import acat_app.app_settings as appset
 
 
 logger = logging.getLogger(__name__)

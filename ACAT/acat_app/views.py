@@ -7,10 +7,13 @@ from django.core.files.storage import FileSystemStorage
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.utils.html import linebreaks
+from configparser import ConfigParser
 from .file_hash import *
 from .genkeypair import *
-from .app_settings import *
+import acat_app.app_settings as appset
 from .messaging import *
+
+logger = logging.getLogger(__name__)
 
 
 # todo: add ssh keypair generation
@@ -20,23 +23,65 @@ from .messaging import *
 # todo: store certificates in database
 
 
-logger = logging.getLogger(__name__)
-
-
 def about(request):
     logging.info("FUNCTION HTML about")
     return render(request, "about.html", {})
 
 
 def app_settings(request):
-    configParser_read_all_configFile()
-    context = {"issuer_attributes": [issuer_CN, issuer_OU,
-                                     issuer_O, issuer_L, issuer_S, issuer_C],
-               "subject_attributes": [subject_CN, subject_OU, subject_O, subject_L, subject_S, subject_C],
-               "private_key": [private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format],
-               "hash_file": [hash_type, hash_value]
+    # initialize Config Parser
+    configP_Writer_Object = ConfigParser()
+    configP_Writer_Object.read("settings.ini")
+    configP_ISSUER_ATTRIBUTES = configP_Writer_Object["ISSUER_ATTRIBUTES"]
+    appset.issuer_CN = format(configP_ISSUER_ATTRIBUTES["issuer_cn"])
+    appset.issuer_O = format(configP_ISSUER_ATTRIBUTES["issuer_o"])
+    appset.issuer_OU = format(configP_ISSUER_ATTRIBUTES["issuer_ou"])
+    appset.issuer_L = format(configP_ISSUER_ATTRIBUTES["issuer_l"])
+    appset.issuer_S = format(configP_ISSUER_ATTRIBUTES["issuer_s"])
+    appset.issuer_C = format(configP_ISSUER_ATTRIBUTES["issuer_c"])
+    context = {"issuer_attributes": [appset.issuer_CN, appset.issuer_OU,
+                                     appset.issuer_O, appset.issuer_L, appset.issuer_S, appset.issuer_C],
+               "subject_attributes": [appset.subject_CN, appset.subject_OU, appset.subject_O, appset.subject_L, appset.subject_S, appset.subject_C],
+               "private_key": [appset.private_KeySize, appset.private_SigAlg, appset.private_Algorithm, appset.private_Curve, appset.private_Format],
+               "hash_file": [appset.hash_type, appset.hash_value],
+               "html_Issuer_CN": appset.issuer_CN,
+               "html_Issuer_O": appset.issuer_O,
+               "html_Issuer_OU": appset.issuer_OU,
+               "html_Issuer_L": appset.issuer_L,
+               "html_Issuer_S": appset.issuer_S,
+               "html_Issuer_C": appset.issuer_C,
                }
-    # return response with template and context
+    if request.method == "POST" and "save_settings" in request.POST:
+        appset.issuer_CN = request.POST.get("html_Issuer_CN")
+        appset.issuer_O = request.POST.get("html_Issuer_O")
+        appset.issuer_OU = request.POST.get("html_Issuer_OU")
+        appset.issuer_L = request.POST.get("html_Issuer_L")
+        appset.issuer_S = request.POST.get("html_Issuer_S")
+        appset.issuer_C = request.POST.get("html_Issuer_C")
+        configP_ISSUER_ATTRIBUTES["issuer_cn"] = appset.issuer_CN
+        configP_ISSUER_ATTRIBUTES["issuer_o"] = appset.issuer_O
+        configP_ISSUER_ATTRIBUTES["issuer_ou"] = appset.issuer_OU
+        configP_ISSUER_ATTRIBUTES["issuer_l"] = appset.issuer_L
+        configP_ISSUER_ATTRIBUTES["issuer_s"] = appset.issuer_S
+        configP_ISSUER_ATTRIBUTES["issuer_c"] = appset.issuer_C
+        # commit config settings to config file
+        with open("settings.ini", "w") as conf:
+            configP_Writer_Object.write(conf)
+        # update the context display
+        context = {"issuer_attributes": [appset.issuer_CN, appset.issuer_OU,
+                                         appset.issuer_O, appset.issuer_L, appset.issuer_S, appset.issuer_C],
+                   "subject_attributes": [appset.subject_CN, appset.subject_OU, appset.subject_O, appset.subject_L, appset.subject_S, appset.subject_C],
+                   "private_key": [appset.private_KeySize, appset.private_SigAlg, appset.private_Algorithm, appset.private_Curve, appset.private_Format],
+                   "hash_file": [appset.hash_type, appset.hash_value],
+                   "html_Issuer_CN": appset.issuer_CN,
+                   "html_Issuer_O": appset.issuer_O,
+                   "html_Issuer_OU": appset.issuer_OU,
+                   "html_Issuer_L": appset.issuer_L,
+                   "html_Issuer_S": appset.issuer_S,
+                   "html_Issuer_C": appset.issuer_C,
+                   }
+        # return response with template and context
+        return render(request, "app_settings.html", context)
     return render(request, "app_settings.html", context)
 
 

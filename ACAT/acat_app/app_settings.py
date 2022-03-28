@@ -4,38 +4,18 @@
 from configparser import ConfigParser
 
 
-global private_KeySize
-global private_SigAlg
-global private_Algorithm
-global private_Format
-global private_Curve
-
-private_KeySize = ""
-private_SigAlg = ""
-private_Algorithm = ""
-private_Format = ""
-private_Curve = ""
-subject_CN = ""
-subject_O = ""
-subject_OU = ""
-subject_L = ""
-subject_S = ""
-subject_C = ""
-issuer_CN = ""
-issuer_O = ""
-issuer_OU = ""
-issuer_L = ""
-issuer_S = ""
-issuer_C = ""
-hash_type = ""
-hash_value = ""
-private1_decoded = ""
-public1_decoded = ""
-private2_decoded = ""
-public2_decoded = ""
+global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
+global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
+global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
+global hash_type, hash_value, private1_decoded, public1_decoded, private2_decoded, public2_decoded
 
 
 def configParser_read_all_configFile():
+    global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
+    global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
+    global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
+    global hash_type, hash_value, private1_decoded, public1_decoded, private2_decoded, public2_decoded
+    # initialize Config Parser
     configP_Writer_Object = ConfigParser()
     configP_Writer_Object.read("settings.ini")
     # get configuration sections
@@ -70,10 +50,13 @@ def configParser_read_all_configFile():
     public2_decoded = format(configP_CERTIFICATE_DATA["public2_decoded"])
 
 
+# initialize configuration
 configParser_read_all_configFile()
 
 
+# ! NOT ALL THE CODE IS HERE, MISSING SOME
 def configParser_write_all_configFile():
+    # initialize Config Parser
     configP_Writer_Object = ConfigParser()
     configP_Writer_Object.read("settings.ini")
     # Get configuration sections
@@ -95,6 +78,11 @@ def configParser_write_all_configFile():
     configP_SUBJECT_ATTRIBUTES["subject_s"] = subject_S
     configP_SUBJECT_ATTRIBUTES["subject_c"] = subject_C
     configP_ISSUER_ATTRIBUTES["issuer_cn"] = issuer_CN
+    configP_ISSUER_ATTRIBUTES["issuer_o"] = issuer_O
+    configP_ISSUER_ATTRIBUTES["issuer_ou"] = issuer_OU
+    configP_ISSUER_ATTRIBUTES["issuer_l"] = issuer_L
+    configP_ISSUER_ATTRIBUTES["issuer_s"] = issuer_S
+    configP_ISSUER_ATTRIBUTES["issuer_c"] = issuer_C
     # commit config settings to config file
     with open("settings.ini", "w") as conf:
         configP_Writer_Object.write(conf)

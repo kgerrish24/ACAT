@@ -22,54 +22,66 @@
 
     <body>
 
-        <p>debug variables</p>
-        <p> issuer_attributes {{ issuer_attributes }} </p>
-        <p> subject_attributes {{ subject_attributes }} </p>
-        <p> private_key {{ private_key }} </p>
-        <p> hash_value {{ hash_value }} </p>
-        <p> misc_ {{ misc_ }} </p>
+        <!-- POST to the app_settings view -->
+        <form method="POST" action="app_settings">
+            {% csrf_token %}
 
-        {% for i in list %}
-        <li>{{ i }}</li>
-        {% endfor %}
+            <p>debug variables</p>
+            <p> issuer_attributes {{ issuer_attributes }} </p>
+            <p> subject_attributes {{ subject_attributes }} </p>
+            <p> private_key {{ private_key }} </p>
+            <p> hash_value {{ hash_value }} </p>
+            <p> misc_ {{ misc_ }} </p>
 
-
-        <fieldset>
-            <h4>Issuer Attributes</h4>
-            <input type="checkbox" id="no_Iss_Add" name="no_Iss_Add" value="no_Iss_Add" checked="checked">
-            <label for="no_Iss_Add">Do Not Add Issuer Address</label><br>
-
-            <div class="form-group">
-                <span>Common Name</span>
-                <input class="form-field" type="text" name="Issuer_CN" id="Issuer_CN" value="certificateauthority.com">
-            </div>
-            <div class="form-group">
-                <span>Organization</span>
-                <input class="form-field" type=" text" name="Issuer_O" id="Issuer_O" value="Issuing Company, Inc.">
-
-            </div>
-            <div class="form-group">
-                <span>Organization Unit</span>
-                <input class="form-field" type="text" name="Issuer_OU" id="Issuer_OU" value="IT">
-
-            </div>
-            <div class="form-group">
-                <span>Locality</span>
-                <input class="form-field" type="text" name="Issuer_L" id="Issuer_L" value="Columbus">
-
-            </div>
-            <div class="form-group">
-                <span>State</span>
-                <input class="form-field" type="text" name="Issuer_S" id="Issuer_S" value="Ohio">
-
-            </div>
-            <div class="form-group">
-                <span>Country</span>
-                <input class="form-field" type="text" name="Issuer_C" id="Issuer_C" value="US">
-            </div>
-        </fieldset>
+            {% for i in list %}
+            <li>{{ i }}</li>
+            {% endfor %}
 
 
+            <fieldset>
+                <h4>Issuer Attributes</h4>
+                <input type="checkbox" id="no_Iss_Add" name="no_Iss_Add" value="no_Iss_Add" checked="checked">
+                <label for="no_Iss_Add">Do Not Add Issuer Address</label><br>
+
+                <div class="form-group">
+                    <span>Common Name</span>
+                    <input class="form-field" type="text" name="html_Issuer_CN" id="html_Issuer_CN"
+                        value="{{ html_Issuer_CN }}">
+                </div>
+                <div class="form-group">
+                    <span>Organization</span>
+                    <input class="form-field" type=" text" name="html_Issuer_O" id="html_Issuer_O"
+                        value="{{ html_Issuer_O }}">
+
+                </div>
+                <div class="form-group">
+                    <span>Organization Unit</span>
+                    <input class="form-field" type="text" name="html_Issuer_OU" id="html_Issuer_OU"
+                        value="{{ html_Issuer_OU }}">
+
+                </div>
+                <div class="form-group">
+                    <span>Locality</span>
+                    <input class="form-field" type="text" name="html_Issuer_L" id="html_Issuer_L"
+                        value="{{ html_Issuer_L }}">
+
+                </div>
+                <div class="form-group">
+                    <span>State</span>
+                    <input class="form-field" type="text" name="html_Issuer_S" id="html_Issuer_S"
+                        value="{{ html_Issuer_S }}">
+
+                </div>
+                <div class="form-group">
+                    <span>Country</span>
+                    <input class="form-field" type="text" name="html_Issuer_C" id="html_Issuer_C"
+                        value="{{ html_Issuer_C }}">
+                </div>
+            </fieldset>
+
+            <button type="submit" class="button is-success is-fullwidth is-medium mt-5" name="save_settings"
+                value="">Save</button>
+        </form>
     </body>
 
     </html>

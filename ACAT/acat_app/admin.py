@@ -3,4 +3,4 @@
 # from django.contrib import admin
 
 
-from .app_settings import *
+import acat_app.app_settings as appset
