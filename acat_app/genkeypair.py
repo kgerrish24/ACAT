@@ -18,14 +18,17 @@ logger = logging.getLogger(__name__)
 # todo: setup logic for extended key usage
 
 
+# crypto engine 1 OpenSSL used for RSA and DSA certs
+# crypto engine 2 cryptography used for EC certs
+
+
 def file_Processing(fp_NewCert_TimeStamp):
     logging.info("FUNCTION file_Processing")
-    from .views import subject_CN
     path_NewCerts = "acat_app/NewCerts/"
     fp_cert_Private = "private.key"
     fp_cert_Public = "public.crt"
     # Strip Period and At characters off Subject_CN so it can be safely added to filename
-    Subject_CN_PrepFileName = subject_CN
+    Subject_CN_PrepFileName = appset.subject_CN
     Subject_CN_ForFileName = Subject_CN_PrepFileName.replace(
         ".", "-").replace("@", "-")
     # Check if directory exists, if not then create
@@ -47,61 +50,56 @@ def file_Processing(fp_NewCert_TimeStamp):
                   fp_NewCert_TimeStamp + Subject_CN_ForFileName + "_" + fp_cert_Public,)
 
 
-# crypto engine 1 used for RSA and DSA certs
 def crypto_Engine_1():
     logging.info("FUNCTION crypto_Engine_1")
     import random
     from OpenSSL import crypto
-    from .views import private_Format, private_KeySize, private_SigAlg
-    from .views import issuer_CN, issuer_OU, issuer_O, issuer_L, issuer_S, issuer_C
-    from .views import no_issuer_Address, no_subject_Address, private_Algorithm
-    from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
-    private_key = crypto.PKey()
-    if private_Algorithm == "RSA":
-        logging.info("FUNCTION crypto_Engine_1 IF cert_Algorithm == RSA")
-        private_key.generate_key(crypto.TYPE_RSA, (int(private_KeySize)))
-    elif private_Algorithm == "DSA":
-        logging.info("FUNCTION crypto_Engine_1 ELIF cert_Algorithm == DSA")
-        private_key.generate_key(crypto.TYPE_DSA, (int(private_KeySize)))
+    appset.private_key = crypto.PKey()
+    if appset.private_Algorithm == "RSA":
+        appset.private_key.generate_key(
+            crypto.TYPE_RSA, (int(appset.private_KeySize)))
+    elif appset.private_Algorithm == "DSA":
+        appset.private_key.generate_key(
+            crypto.TYPE_DSA, (int(appset.private_KeySize)))
     x509 = crypto.X509()
     subject = x509.get_subject()
     # get variable to determine if adding subject address
-    if no_subject_Address == "no_Sub_Add":
-        subject.organizationName = subject_O
-        subject.organizationalUnitName = subject_OU
-        subject.commonName = subject_CN
+    if appset.no_subject_Address == "no_Sub_Add":
+        subject.organizationName = appset.subject_O
+        subject.organizationalUnitName = appset.subject_OU
+        subject.commonName = appset.subject_CN
     else:
-        subject.countryName = subject_C
-        subject.stateOrProvinceName = subject_S
-        subject.localityName = subject_L
-        subject.organizationName = subject_O
-        subject.organizationalUnitName = subject_OU
-        subject.commonName = subject_CN
+        subject.countryName = appset.subject_C
+        subject.stateOrProvinceName = appset.subject_S
+        subject.localityName = appset.subject_L
+        subject.organizationName = appset.subject_O
+        subject.organizationalUnitName = appset.subject_OU
+        subject.commonName = appset.subject_CN
     issuer = x509.get_issuer()
     # get variable to determine if adding issuer address
-    if no_issuer_Address == "no_Iss_Add":
-        issuer.organizationName = issuer_O
-        issuer.organizationalUnitName = issuer_OU
-        issuer.commonName = issuer_CN
+    if appset.no_issuer_Address == "no_Iss_Add":
+        issuer.organizationName = appset.issuer_O
+        issuer.organizationalUnitName = appset.issuer_OU
+        issuer.commonName = appset.issuer_CN
     else:
-        issuer.countryName = issuer_C
-        issuer.stateOrProvinceName = issuer_S
-        issuer.localityName = issuer_L
-        issuer.organizationName = issuer_O
-        issuer.organizationalUnitName = issuer_OU
-        issuer.commonName = issuer_CN
+        issuer.countryName = appset.issuer_C
+        issuer.stateOrProvinceName = appset.issuer_S
+        issuer.localityName = appset.issuer_L
+        issuer.organizationName = appset.issuer_O
+        issuer.organizationalUnitName = appset.issuer_OU
+        issuer.commonName = appset.issuer_CN
     x509.gmtime_adj_notBefore(0)
     # Years * days * hours * minutes * seconds
     x509.gmtime_adj_notAfter(1 * 365 * 24 * 60 * 60)
-    x509.set_pubkey(private_key)
+    x509.set_pubkey(appset.private_key)
     x509.set_serial_number(random.randrange(100000))
     x509.set_version(2)
     x509.add_extensions(
         [
             crypto.X509Extension
             (b"subjectAltName", False,
-             ",".join(["DNS:%s" % subject_CN % (),
-                       "DNS:*.%s" % subject_CN % (),
+             ",".join(["DNS:%s" % appset.subject_CN % (),
+                       "DNS:*.%s" % appset.subject_CN % (),
                        "DNS:localhost",
                        "DNS:*.localhost",
                        ]
@@ -113,11 +111,10 @@ def crypto_Engine_1():
                                  b"clientAuth,serverAuth"),
             crypto.X509Extension(b"basicConstraints", True,
                                  b"CA:false"), ])
-    x509.sign(private_key, (private_SigAlg))
-    return (crypto.dump_certificate(crypto.FILETYPE_PEM, x509), crypto.dump_privatekey(crypto.FILETYPE_PEM, private_key),)
+    x509.sign(appset.private_key, (appset.private_SigAlg))
+    return (crypto.dump_certificate(crypto.FILETYPE_PEM, x509), crypto.dump_privatekey(crypto.FILETYPE_PEM, appset.private_key),)
 
 
-# crypto engine 2 used for EC certs
 def crypto_Engine_2():
     logging.info("FUNCTION crypto_Engine_2")
     from cryptography import x509
@@ -125,45 +122,43 @@ def crypto_Engine_2():
     from cryptography.hazmat.primitives import hashes, serialization
     from cryptography.hazmat.primitives.asymmetric import ec, rsa
     from cryptography.x509.oid import NameOID
-    from .views import issuer_C, issuer_CN, issuer_L, issuer_O, issuer_OU, issuer_S
-    from .views import no_issuer_Address, no_subject_Address, private_Algorithm, private_Curve, private_Format, private_KeySize, private_SigAlg
-    from .views import subject_C, subject_CN, subject_L, subject_O, subject_OU, subject_S
     one_day = datetime.timedelta(1, 0, 0)
-    if private_Algorithm == "RSA":
+    if appset.private_Algorithm == "RSA":
         logging.info("FUNCTION crypto_Engine_2 IF cert_Algorithm == RSA")
         private_key = rsa.generate_private_key(
-            public_exponent=65537, key_size=(int(private_KeySize)), backend=default_backend())
-    elif private_Algorithm == "EC":
+            public_exponent=65537, key_size=(int(appset.private_KeySize)), backend=default_backend())
+    elif appset.private_Algorithm == "EC":
         logging.info("FUNCTION crypto_Engine_2 ELIF cert_Algorithm == EC")
-        if private_Curve == "secp521r1":
+        if appset.private_Curve == "secp521r1":
             private_key = ec.generate_private_key(ec.SECP521R1())
-        elif private_Curve == "secp384r1":
+        elif appset.private_Curve == "secp384r1":
             private_key = ec.generate_private_key(ec.SECP384R1())
-        elif private_Curve == "secp256r1":
+        elif appset.private_Curve == "secp256r1":
             private_key = ec.generate_private_key(ec.SECP256R1())
-        elif private_Curve == "secp256k1":
+        elif appset.private_Curve == "secp256k1":
             private_key = ec.generate_private_key(ec.SECP256K1())
-        elif private_Curve == "secp224r1":
+        elif appset.private_Curve == "secp224r1":
             private_key = ec.generate_private_key(ec.SECP224R1())
-        elif private_Curve == "secp192r1":
+        elif appset.private_Curve == "secp192r1":
             private_key = ec.generate_private_key(ec.SECP192R1())
-        elif private_Curve == "BrainpoolP512R1":
+        elif appset.private_Curve == "BrainpoolP512R1":
             private_key = ec.generate_private_key(ec.BrainpoolP512R1())
-        elif private_Curve == "BrainpoolP384R1":
+        elif appset.private_Curve == "BrainpoolP384R1":
             private_key = ec.generate_private_key(ec.BrainpoolP384R1())
-        elif private_Curve == "BrainpoolP256R1":
+        elif appset.private_Curve == "BrainpoolP256R1":
             private_key = ec.generate_private_key(ec.BrainpoolP256R1())
     public_key = private_key.public_key()
     builder = x509.CertificateBuilder()
     # get variable to determine if adding subject address
-    if no_subject_Address == "no_Sub_Add":
+    if appset.no_subject_Address == "no_Sub_Add":
         builder = builder.subject_name(
             x509.Name(
                 [
-                    x509.NameAttribute(NameOID.ORGANIZATION_NAME, subject_O),
                     x509.NameAttribute(
-                        NameOID.ORGANIZATIONAL_UNIT_NAME, subject_OU),
-                    x509.NameAttribute(NameOID.COMMON_NAME, subject_CN),
+                        NameOID.ORGANIZATION_NAME, appset.subject_O),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, appset.subject_OU),
+                    x509.NameAttribute(NameOID.COMMON_NAME, appset.subject_CN),
                 ]
             )
         )
@@ -171,26 +166,29 @@ def crypto_Engine_2():
         builder = builder.subject_name(
             x509.Name(
                 [
-                    x509.NameAttribute(NameOID.COUNTRY_NAME, subject_C),
+                    x509.NameAttribute(NameOID.COUNTRY_NAME, appset.subject_C),
                     x509.NameAttribute(
-                        NameOID.STATE_OR_PROVINCE_NAME, subject_S),
-                    x509.NameAttribute(NameOID.LOCALITY_NAME, subject_L),
-                    x509.NameAttribute(NameOID.ORGANIZATION_NAME, subject_O),
+                        NameOID.STATE_OR_PROVINCE_NAME, appset.subject_S),
                     x509.NameAttribute(
-                        NameOID.ORGANIZATIONAL_UNIT_NAME, subject_OU),
-                    x509.NameAttribute(NameOID.COMMON_NAME, subject_CN),
+                        NameOID.LOCALITY_NAME, appset.subject_L),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATION_NAME, appset.subject_O),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, appset.subject_OU),
+                    x509.NameAttribute(NameOID.COMMON_NAME, appset.subject_CN),
                 ]
             )
         )
     # get variable to determine if adding issuer address
-    if no_issuer_Address == "no_Iss_Add":
+    if appset.no_issuer_Address == "no_Iss_Add":
         builder = builder.issuer_name(
             x509.Name(
                 [
-                    x509.NameAttribute(NameOID.ORGANIZATION_NAME, issuer_O),
                     x509.NameAttribute(
-                        NameOID.ORGANIZATIONAL_UNIT_NAME, issuer_OU),
-                    x509.NameAttribute(NameOID.COMMON_NAME, issuer_CN),
+                        NameOID.ORGANIZATION_NAME, appset.issuer_O),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, appset.issuer_OU),
+                    x509.NameAttribute(NameOID.COMMON_NAME, appset.issuer_CN),
                 ]
             )
         )
@@ -198,14 +196,15 @@ def crypto_Engine_2():
         builder = builder.issuer_name(
             x509.Name(
                 [
-                    x509.NameAttribute(NameOID.COUNTRY_NAME, issuer_C),
+                    x509.NameAttribute(NameOID.COUNTRY_NAME, appset.issuer_C),
                     x509.NameAttribute(
-                        NameOID.STATE_OR_PROVINCE_NAME, issuer_S),
-                    x509.NameAttribute(NameOID.LOCALITY_NAME, issuer_L),
-                    x509.NameAttribute(NameOID.ORGANIZATION_NAME, issuer_O),
+                        NameOID.STATE_OR_PROVINCE_NAME, appset.issuer_S),
+                    x509.NameAttribute(NameOID.LOCALITY_NAME, appset.issuer_L),
                     x509.NameAttribute(
-                        NameOID.ORGANIZATIONAL_UNIT_NAME, issuer_OU),
-                    x509.NameAttribute(NameOID.COMMON_NAME, issuer_CN),
+                        NameOID.ORGANIZATION_NAME, appset.issuer_O),
+                    x509.NameAttribute(
+                        NameOID.ORGANIZATIONAL_UNIT_NAME, appset.issuer_OU),
+                    x509.NameAttribute(NameOID.COMMON_NAME, appset.issuer_CN),
                 ]
             )
         )
@@ -217,8 +216,8 @@ def crypto_Engine_2():
     builder = builder.add_extension(
         x509.SubjectAlternativeName(
             [
-                x509.DNSName(subject_CN % ()),
-                x509.DNSName("*.%s" % subject_CN % ()),
+                x509.DNSName(appset.subject_CN % ()),
+                x509.DNSName("*.%s" % appset.subject_CN % ()),
                 x509.DNSName("localhost"),
                 x509.DNSName("*.localhost"),
             ]
@@ -245,20 +244,20 @@ def crypto_Engine_2():
     builder = builder.add_extension(
         x509.BasicConstraints(ca=False, path_length=None), critical=True
     )
-    if private_SigAlg == "sha1":
+    if appset.private_SigAlg == "sha1":
         certificate = builder.sign(
             private_key=private_key, algorithm=hashes.SHA1(), backend=default_backend()
         )
-    elif private_SigAlg == "sha256":
+    elif appset.private_SigAlg == "sha256":
         logging.info("FUNCTION crypto_Engine_2 ELIF cert_SigAlg == sha256 ")
         certificate = builder.sign(
             private_key=private_key, algorithm=hashes.SHA256(), backend=default_backend()
         )
-    elif private_SigAlg == "sha384":
+    elif appset.private_SigAlg == "sha384":
         certificate = builder.sign(
             private_key=private_key, algorithm=hashes.SHA384(), backend=default_backend()
         )
-    elif private_SigAlg == "sha512":
+    elif appset.private_SigAlg == "sha512":
         certificate = builder.sign(
             private_key=private_key, algorithm=hashes.SHA512(), backend=default_backend()
         )

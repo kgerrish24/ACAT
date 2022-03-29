@@ -8,6 +8,7 @@ global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, privat
 global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
 global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
 global hash_type, hash_value, private1_decoded, public1_decoded, private2_decoded, public2_decoded
+global no_issuer_Address, no_subject_Address
 
 
 def configParser_read_all_configFile():

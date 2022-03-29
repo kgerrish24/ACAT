@@ -137,70 +137,66 @@ def genkeypair(request):
 
 def generate_Certificate(request):
     logging.info("FUNCTION HTML generate_Certificate")
-    global private_KeySize, private_SigAlg, private_Algorithm, private_Curve
-    global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
-    global issuer_CN, issuer_OU, issuer_O, issuer_L, issuer_S, issuer_C
-    global no_subject_Address, no_issuer_Address, private_Format
-    no_issuer_Address = None
+    appset.no_issuer_Address = None
     if request.method == "POST" and "run_script" in request.POST:
         # initialize config parser
-        configP_Writer_Object = ConfigParser()
-        configP_Writer_Object.read("settings.ini")
-        configP_PRIVATE_KEY = configP_Writer_Object["PRIVATE_KEY"]
-        configP_SUBJECT_ATTRIBUTES = configP_Writer_Object["SUBJECT_ATTRIBUTES"]
-        configP_ISSUER_ATTRIBUTES = configP_Writer_Object["ISSUER_ATTRIBUTES"]
-        configP_CERTIFICATE_DATA = configP_Writer_Object["CERTIFICATE_DATA"]
+        appset.configP_Writer_Object = ConfigParser()
+        appset.configP_Writer_Object.read("settings.ini")
+        appset.configP_PRIVATE_KEY = appset.configP_Writer_Object["PRIVATE_KEY"]
+        appset.configP_SUBJECT_ATTRIBUTES = appset.configP_Writer_Object["SUBJECT_ATTRIBUTES"]
+        configP_ISSUER_ATTRIBUTES = appset.configP_Writer_Object["ISSUER_ATTRIBUTES"]
+        configP_CERTIFICATE_DATA = appset.configP_Writer_Object["CERTIFICATE_DATA"]
         # get user selected settings from web page
-        private_KeySize = request.POST.get("KeySize")
-        private_SigAlg = request.POST.get("SigAlg")
-        private_Algorithm = request.POST.get("Algorithm")
+        appset.private_KeySize = request.POST.get("KeySize")
+        appset.private_SigAlg = request.POST.get("SigAlg")
+        appset.private_Algorithm = request.POST.get("Algorithm")
         # Remove curve data if not using an Elliptic Curve in the cert
-        if private_Algorithm == "EC":
-            private_Curve = request.POST.get("Curve")
-        private_Format = request.POST.get("Format")
-        no_subject_Address = request.POST.get("no_Sub_Add")
-        subject_CN = request.POST.get("Subject_CN")
-        subject_O = request.POST.get("Subject_O")
-        subject_OU = request.POST.get("Subject_OU")
-        subject_L = request.POST.get("Subject_L")
-        subject_S = request.POST.get("Subject_S")
-        subject_C = request.POST.get("Subject_C")
+        if appset.private_Algorithm == "EC":
+            appset.private_Curve = request.POST.get("Curve")
+        appset.private_Format = request.POST.get("Format")
+        appset.no_subject_Address = request.POST.get("no_Sub_Add")
+        appset.subject_CN = request.POST.get("Subject_CN")
+        appset.subject_O = request.POST.get("Subject_O")
+        appset.subject_OU = request.POST.get("Subject_OU")
+        appset.subject_L = request.POST.get("Subject_L")
+        appset.subject_S = request.POST.get("Subject_S")
+        appset.subject_C = request.POST.get("Subject_C")
         #! get key usage selections from web page -ONLY RESIDENT IN VARIABLE-
-        key_usage = request.POST.getlist("KeyUsage")
+        appset.key_usage = request.POST.getlist("KeyUsage")
         #! get extended key usage selections from web page -ONLY RESIDENT IN VARIABLE-
-        extended_Key_Usage = request.POST.getlist("extendedKeyUsage")
+        appset.extended_Key_Usage = request.POST.getlist("extendedKeyUsage")
         # read issuer attributes from config file
-        issuer_CN = format(configP_ISSUER_ATTRIBUTES["Issuer_CN"])
-        issuer_O = format(configP_ISSUER_ATTRIBUTES["Issuer_O"])
-        issuer_OU = format(configP_ISSUER_ATTRIBUTES["Issuer_OU"])
-        issuer_L = format(configP_ISSUER_ATTRIBUTES["Issuer_L"])
-        issuer_S = format(configP_ISSUER_ATTRIBUTES["Issuer_S"])
-        issuer_C = format(configP_ISSUER_ATTRIBUTES["Issuer_C"])
+        appset.issuer_CN = format(configP_ISSUER_ATTRIBUTES["Issuer_CN"])
+        appset.issuer_O = format(configP_ISSUER_ATTRIBUTES["Issuer_O"])
+        appset.issuer_OU = format(configP_ISSUER_ATTRIBUTES["Issuer_OU"])
+        appset.issuer_L = format(configP_ISSUER_ATTRIBUTES["Issuer_L"])
+        appset.issuer_S = format(configP_ISSUER_ATTRIBUTES["Issuer_S"])
+        appset.issuer_C = format(configP_ISSUER_ATTRIBUTES["Issuer_C"])
         # write private key settings and subject attribute settings to config file
-        configP_PRIVATE_KEY["KeySize"] = private_KeySize
-        configP_PRIVATE_KEY["SigAlg"] = private_SigAlg
-        configP_PRIVATE_KEY["Algorithm"] = private_Algorithm
-        configP_PRIVATE_KEY["Format"] = private_Format
+        appset.configP_PRIVATE_KEY["KeySize"] = appset.private_KeySize
+        appset.configP_PRIVATE_KEY["SigAlg"] = appset.private_SigAlg
+        appset.configP_PRIVATE_KEY["Algorithm"] = appset.private_Algorithm
+        appset.configP_PRIVATE_KEY["Format"] = appset.private_Format
         # Remove curve data if not using an Elliptic Curve in the cert
-        if private_Algorithm == "EC":
-            configP_PRIVATE_KEY["Curve"] = private_Curve
+        if appset.private_Algorithm == "EC":
+            appset.configP_PRIVATE_KEY["Curve"] = appset.private_Curve
         else:
-            configP_PRIVATE_KEY["Curve"] = ""
+            appset.configP_PRIVATE_KEY["Curve"] = ""
         # assign certificate data to configuration writer objects
-        configP_SUBJECT_ATTRIBUTES["Subject_CN"] = subject_CN
-        configP_SUBJECT_ATTRIBUTES["Subject_O"] = subject_O
-        configP_SUBJECT_ATTRIBUTES["Subject_OU"] = subject_OU
-        configP_SUBJECT_ATTRIBUTES["Subject_L"] = subject_L
-        configP_SUBJECT_ATTRIBUTES["Subject_S"] = subject_S
-        configP_SUBJECT_ATTRIBUTES["Subject_C"] = subject_C
+        appset.configP_SUBJECT_ATTRIBUTES["Subject_CN"] = appset.subject_CN
+        appset.configP_SUBJECT_ATTRIBUTES["Subject_O"] = appset.subject_O
+        appset.configP_SUBJECT_ATTRIBUTES["Subject_OU"] = appset.subject_OU
+        appset.configP_SUBJECT_ATTRIBUTES["Subject_L"] = appset.subject_L
+        appset.configP_SUBJECT_ATTRIBUTES["Subject_S"] = appset.subject_S
+        appset.configP_SUBJECT_ATTRIBUTES["Subject_C"] = appset.subject_C
         # commit configuration items to config file
         with open("settings.ini", "w") as conf:
-            configP_Writer_Object.write(conf)
+            appset.configP_Writer_Object.write(conf)
         fp_NewCert_TimeStamp = time.strftime("%y%m%d_%H%M%S_")
         if request.POST.get("Algorithm", "") == "EC":
             execute_Crypto_Engine_2()
             # read generated cert data into memory
-            configP_Writer_Object.read("settings.ini")
+            appset.configP_Writer_Object.read("settings.ini")
             private_to_Webpage = linebreaks(
                 format(configP_CERTIFICATE_DATA["PRIVATE2_DECODED"]))
             public_to_Webpage = linebreaks(
@@ -208,7 +204,7 @@ def generate_Certificate(request):
         else:
             execute_Crypto_Engine_1()
             # read generated cert data into memory
-            configP_Writer_Object.read("settings.ini")
+            appset.configP_Writer_Object.read("settings.ini")
             private_to_Webpage = linebreaks(
                 format(configP_CERTIFICATE_DATA["PRIVATE1_DECODED"]))
             public_to_Webpage = linebreaks(
