@@ -39,18 +39,37 @@ def app_settings(request):
     appset.issuer_L = format(configP_ISSUER_ATTRIBUTES["issuer_l"])
     appset.issuer_S = format(configP_ISSUER_ATTRIBUTES["issuer_s"])
     appset.issuer_C = format(configP_ISSUER_ATTRIBUTES["issuer_c"])
-    context = {"issuer_attributes": [appset.issuer_CN, appset.issuer_OU,
-                                     appset.issuer_O, appset.issuer_L, appset.issuer_S, appset.issuer_C],
-               "subject_attributes": [appset.subject_CN, appset.subject_OU, appset.subject_O, appset.subject_L, appset.subject_S, appset.subject_C],
-               "private_key": [appset.private_KeySize, appset.private_SigAlg, appset.private_Algorithm, appset.private_Curve, appset.private_Format],
-               "hash_file": [appset.hash_type, appset.hash_value],
-               "html_Issuer_CN": appset.issuer_CN,
-               "html_Issuer_O": appset.issuer_O,
-               "html_Issuer_OU": appset.issuer_OU,
-               "html_Issuer_L": appset.issuer_L,
-               "html_Issuer_S": appset.issuer_S,
-               "html_Issuer_C": appset.issuer_C,
-               }
+    context = {
+        "issuer_attributes": [
+            appset.issuer_CN,
+            appset.issuer_OU,
+            appset.issuer_O,
+            appset.issuer_L,
+            appset.issuer_S,
+            appset.issuer_C,
+        ],
+        "subject_attributes": [
+            appset.subject_CN,
+            appset.subject_OU,
+            appset.subject_O,
+            appset.subject_L,
+            appset.subject_S,
+            appset.subject_C,
+        ],
+        "private_key": [
+            appset.private_KeySize,
+            appset.private_SigAlg,
+            appset.private_Algorithm,
+            appset.private_Curve,
+        ],
+        "hash_file": [appset.hash_type, appset.hash_value],
+        "html_Issuer_CN": appset.issuer_CN,
+        "html_Issuer_O": appset.issuer_O,
+        "html_Issuer_OU": appset.issuer_OU,
+        "html_Issuer_L": appset.issuer_L,
+        "html_Issuer_S": appset.issuer_S,
+        "html_Issuer_C": appset.issuer_C,
+    }
     if request.method == "POST" and "save_settings" in request.POST:
         appset.issuer_CN = request.POST.get("html_Issuer_CN")
         appset.issuer_O = request.POST.get("html_Issuer_O")
@@ -68,18 +87,37 @@ def app_settings(request):
         with open("settings.ini", "w") as conf:
             configP_Writer_Object.write(conf)
         # update the context display
-        context = {"issuer_attributes": [appset.issuer_CN, appset.issuer_OU,
-                                         appset.issuer_O, appset.issuer_L, appset.issuer_S, appset.issuer_C],
-                   "subject_attributes": [appset.subject_CN, appset.subject_OU, appset.subject_O, appset.subject_L, appset.subject_S, appset.subject_C],
-                   "private_key": [appset.private_KeySize, appset.private_SigAlg, appset.private_Algorithm, appset.private_Curve, appset.private_Format],
-                   "hash_file": [appset.hash_type, appset.hash_value],
-                   "html_Issuer_CN": appset.issuer_CN,
-                   "html_Issuer_O": appset.issuer_O,
-                   "html_Issuer_OU": appset.issuer_OU,
-                   "html_Issuer_L": appset.issuer_L,
-                   "html_Issuer_S": appset.issuer_S,
-                   "html_Issuer_C": appset.issuer_C,
-                   }
+        context = {
+            "issuer_attributes": [
+                appset.issuer_CN,
+                appset.issuer_OU,
+                appset.issuer_O,
+                appset.issuer_L,
+                appset.issuer_S,
+                appset.issuer_C,
+            ],
+            "subject_attributes": [
+                appset.subject_CN,
+                appset.subject_OU,
+                appset.subject_O,
+                appset.subject_L,
+                appset.subject_S,
+                appset.subject_C,
+            ],
+            "private_key": [
+                appset.private_KeySize,
+                appset.private_SigAlg,
+                appset.private_Algorithm,
+                appset.private_Curve,
+            ],
+            "hash_file": [appset.hash_type, appset.hash_value],
+            "html_Issuer_CN": appset.issuer_CN,
+            "html_Issuer_O": appset.issuer_O,
+            "html_Issuer_OU": appset.issuer_OU,
+            "html_Issuer_L": appset.issuer_L,
+            "html_Issuer_S": appset.issuer_S,
+            "html_Issuer_C": appset.issuer_C,
+        }
         # return response with template and context
         return render(request, "app_settings.html", context)
     return render(request, "app_settings.html", context)
@@ -153,7 +191,6 @@ def generate_Certificate(request):
         # Remove curve data if not using an Elliptic Curve in the cert
         if appset.private_Algorithm == "EC":
             appset.private_Curve = request.POST.get("Curve")
-        appset.private_Format = request.POST.get("Format")
         appset.no_subject_Address = request.POST.get("no_Sub_Add")
         appset.subject_CN = request.POST.get("Subject_CN")
         appset.subject_O = request.POST.get("Subject_O")
@@ -176,7 +213,6 @@ def generate_Certificate(request):
         appset.configP_PRIVATE_KEY["KeySize"] = appset.private_KeySize
         appset.configP_PRIVATE_KEY["SigAlg"] = appset.private_SigAlg
         appset.configP_PRIVATE_KEY["Algorithm"] = appset.private_Algorithm
-        appset.configP_PRIVATE_KEY["Format"] = appset.private_Format
         # Remove curve data if not using an Elliptic Curve in the cert
         if appset.private_Algorithm == "EC":
             appset.configP_PRIVATE_KEY["Curve"] = appset.private_Curve
@@ -193,22 +229,11 @@ def generate_Certificate(request):
         with open("settings.ini", "w") as conf:
             appset.configP_Writer_Object.write(conf)
         fp_NewCert_TimeStamp = time.strftime("%y%m%d_%H%M%S_")
-        if request.POST.get("Algorithm", "") == "EC":
-            execute_Crypto_Engine_2()
-            # read generated cert data into memory
-            appset.configP_Writer_Object.read("settings.ini")
-            private_to_Webpage = linebreaks(
-                format(configP_CERTIFICATE_DATA["PRIVATE2_DECODED"]))
-            public_to_Webpage = linebreaks(
-                format(configP_CERTIFICATE_DATA["PUBLIC2_DECODED"]))
-        else:
-            execute_Crypto_Engine_1()
-            # read generated cert data into memory
-            appset.configP_Writer_Object.read("settings.ini")
-            private_to_Webpage = linebreaks(
-                format(configP_CERTIFICATE_DATA["PRIVATE1_DECODED"]))
-            public_to_Webpage = linebreaks(
-                format(configP_CERTIFICATE_DATA["PUBLIC1_DECODED"]))
+        execute_Crypto_Engine_1()
+        # read generated cert data into memory
+        appset.configP_Writer_Object.read("settings.ini")
+        private_to_Webpage = linebreaks(format(configP_CERTIFICATE_DATA["PRIVATE_DECODED"]))
+        public_to_Webpage = linebreaks(format(configP_CERTIFICATE_DATA["PUBLIC_DECODED"]))
         html = (
             "<html><body><a href=/genkeypair>Click to Return</a><p>Private Certificate Displayed First and Saved to PRIVATE.KEY.</p>Public Certificate Displayed Second and saved to PUBLIC.CRT.<p></p>Private Certificate Below<p></p> %s </body></html>"
             % private_to_Webpage

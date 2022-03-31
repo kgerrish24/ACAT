@@ -4,8 +4,50 @@
 {% load static %}
 
 
+<!-- <link rel="stylesheet" href="{% static 'css/genkeypair.css' %}"> -->
+<!-- <script src="{% static 'js/jquery-3.5.1.min.js' %}"> -->
 
-<link rel="stylesheet" href="{% static 'css/genkeypair.css' %}">
+<script>
+    function funcRSA() {
+        document.getElementById("mySelectRSA").hidden = false;
+        document.getElementById("mySelectRSA").disabled = false;
+        document.getElementById("mySelectDSA").hidden = true;
+        document.getElementById("mySelectEC").hidden = true;
+        document.getElementById("mySelectCurve").disabled = true;
+        var x = document.getElementById("myInputRSA").value;
+        document.getElementById("Algorithm").value = x;
+    }
+    function funcDSA() {
+        document.getElementById("mySelectRSA").hidden = true;
+        document.getElementById("mySelectDSA").hidden = false;
+        document.getElementById("mySelectEC").hidden = true;
+        document.getElementById("mySelectCurve").disabled = true;
+        var x = document.getElementById("myInputDSA").value;
+        document.getElementById("Algorithm").value = x;
+    }
+    function funcEC() {
+        document.getElementById("mySelectRSA").hidden = true;
+        document.getElementById("mySelectDSA").hidden = true;
+        document.getElementById("mySelectEC").hidden = false;
+        document.getElementById("mySelectCurve").disabled = false;
+        var x = document.getElementById("myInputEC").value;
+        document.getElementById("Algorithm").value = x;
+    }
+    function funcGenCert() {
+        if (document.getElementById("Algorithm").value == "RSA") {
+            var y = document.getElementById("mySelectRSA").value;
+            document.getElementById("SigAlg").value = y;
+        }
+        if (document.getElementById("Algorithm").value == "DSA") {
+            var y = document.getElementById("mySelectDSA").value;
+            document.getElementById("SigAlg").value = y;
+        }
+        if (document.getElementById("Algorithm").value == "EC") {
+            var y = document.getElementById("mySelectEC").value;
+            document.getElementById("SigAlg").value = y;
+        }
+    }
+</script>
 
 
 <!-- Sidebar -->
@@ -28,31 +70,34 @@
             </div>
         </header>
 
+
         <form method="POST" action="generate_certificate">
             <div class="breaking">
-                <fieldset>
+                <div class="w3-container">
+                    <fieldset>
+                        <legend>Settings</legend>
+                        <div class="w3-container">
+                            <input id="SigAlg" name="SigAlg" hidden="True">
+                            <label>Signature Algorithm</label>
+                            <select id="mySelectRSA" disabled="true">
+                                <option value="sha1">SHA-1 with RSA</option>
+                                <option value="sha256">SHA-256 with RSA</option>
+                                <option value="sha384">SHA-384 with RSA</option>
+                                <option value="sha512">SHA-512 with RSA</option>
+                            </select>
+                            <select id="mySelectDSA" hidden="true">
+                                <option value="sha1">SHA-1 with DSA</option>
+                            </select>
+                            <select id="mySelectEC" hidden="true">
+                                <option value="sha1">SHA-1 with ECDSA</option>
+                                <option value="sha256">SHA-256 with ECDSA</option>
+                                <option value="sha384">SHA-384 with ECDSA</option>
+                            </select>
 
-                    <legend>Settings</legend>
-                    <div class="container">
-                        <h4>Algorithm</h4>
-                        <a></a>
-                        <label>
-                            <input type="radio" id="RSA" name="Algorithm" value="RSA" required checked="checked">
-                            <span>RSA</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="DSA" name="Algorithm" value="DSA">
-                            <span>DSA</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="EC" name="Algorithm" value="EC">
-                            <span>EC</span>
-                        </label>
-                    </div>
-                    <div class="container">
-                        <h4>Curve&nbsp;</h4>
-                        <label>
-                            <select Name="Curve" Size="1">
+                            <br>
+
+                            <label>Curve</label>
+                            <select id="mySelectCurve" name="Curve" disabled="true">
                                 <option value="secp521r1"> SECG secp521r1 / NIST P-521 </option>
                                 <option value="secp384r1"> SECG secp384r1 / NIST P-384 </option>
                                 <option value="secp256r1"> SECG secp256r1 / NIST P-256 </option>
@@ -63,66 +108,39 @@
                                 <option value="BrainpoolP384R1"> BrainpoolP384R1 </option>
                                 <option value="BrainpoolP256R1"> BrainpoolP256R1 </option>
                             </select>
-                        </label>
-                    </div>
 
-                    <div class="container">
-                        <h4>Key Size</h4>
-                        <label>
-                            <input type="radio" id="512" name="KeySize" value="512" required>
-                            <span>512-bit</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="1024" name="KeySize" value="1024">
-                            <span>1024-bits</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="2048" name="KeySize" value="2048" checked="checked">
-                            <span>2048-bits</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="4096" name="KeySize" value="4096">
-                            <span>4096-bits</span>
-                        </label>
-                    </div>
+                            <br>
 
-                    <div class="container">
-                        <h4>Signature</h4>
-                        <label>
-                            <input type="radio" id="sha1" name="SigAlg" value="sha1" required>
-                            <span>SHA-1</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="sha256" name="SigAlg" value="sha256" checked="checked">
-                            <span>SHA-256</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="sha384" name="SigAlg" value="sha384">
-                            <span>SHA-384</span>
-                        </label>
-                        <label>
-                            <input type="radio" id="sha512" name="SigAlg" value="sha512">
-                            <span>SHA-384</span>
-                        </label>
-                    </div>
+                            <label>
+                                Algorithm
+                                <input id="Algorithm" name="Algorithm" hidden="True">
+                                <input type="button" onclick="funcRSA()" id="myInputRSA" value="RSA">
+                                <input type="button" onclick="funcDSA()" id="myInputDSA" value="DSA">
+                                <input type="button" onclick="funcEC()" id="myInputEC" value="EC">
+                            </label>
 
-                    <div class="container">
-                        <h4>Format</h4>
-                        <label>
-                            <input type="radio" id="pkcs8" name="Format" value="pkcs8" required checked="checked">
-                            <span>PKCS#8</span>
-                        </label>
-                    </div>
+
+
+                            <div class="container">
+                                <label for="KeySize">Key Size</label>
+                                <input type="number" id="KeySize" name="KeySize" min="0" max="16384" value="2048">
+                            </div>
+                        </div>
+                </div>
 
                 </fieldset>
 
+
+
+
+                <br>
+
                 <fieldset>
-
-                    <h4>Subject Attributes</h4>
-
+                    <legend>Subject Attributes</legend>
+                    <p></p>
                     <input type="checkbox" id="no_Sub_Add" name="no_Sub_Add" value="no_Sub_Add" checked="checked">
-                    <label for="no_Sub_Add">Do Not Add Subject Address</label><br>
-
+                    <label>No Subject Address</label>
+                    <p></p>
                     <div class="form-group">
                         <span>Common Name</span>
                         <input class="form-field" type="text" id="Subject_CN" name="Subject_CN"
@@ -161,7 +179,7 @@
                     </select>
                     <label>Subject Alt Names <input type="text"></label>
                 </fieldset>
-
+                <br>
                 <fieldset>
                     <legend>Key Usage</legend>
                     <input type="checkbox" id="digital_signature" name="KeyUsage" value="digital_signature"
@@ -185,7 +203,7 @@
                     <input type="checkbox" id="decipher_only" name="KeyUsage" value="decipher_only">
                     <label for="decipher_only">Decipher Only</label>
                 </fieldset>
-
+                <br>
                 <fieldset>
                     <legend>Extended Key Usage</legend>
                     <input type="checkbox" id="id_kp_serverAuth" name="extendedKeyUsage" value="id_kp_serverAuth"
@@ -204,9 +222,10 @@
                     <input type="checkbox" id="id_kp_OCSPSigning" name="extendedKeyUsage" value="id_kp_OCSPSigning">
                     <label for="id_kp_OCSPSigning">OCSP Signing</label><br>
                 </fieldset>
-
-                <p></p><button type="submit" class="button is-success is-fullwidth is-medium mt-5" name="run_script"
-                    value="genneyThatCert">Generate Key Pair (Base64 x509)</button>
+                <br>
+                <p></p><button type="submit" onclick="funcGenCert()"
+                    class="button is-success is-fullwidth is-medium mt-5" name="run_script">Generate Key Pair (Base64
+                    x509)</button>
                 <p></p>
 
                 {% csrf_token %}

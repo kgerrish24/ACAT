@@ -7,7 +7,7 @@ from configparser import ConfigParser
 global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
 global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
 global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
-global hash_type, hash_value, private1_decoded, public1_decoded, private2_decoded, public2_decoded
+global hash_type, hash_value, private_decoded, public_decoded
 global no_issuer_Address, no_subject_Address
 
 
@@ -15,7 +15,7 @@ def configParser_read_all_configFile():
     global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
     global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
     global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
-    global hash_type, hash_value, private1_decoded, public1_decoded, private2_decoded, public2_decoded
+    global hash_type, hash_value, private_decoded, public_decoded
     # initialize Config Parser
     configP_Writer_Object = ConfigParser()
     configP_Writer_Object.read("settings.ini")
@@ -45,10 +45,8 @@ def configParser_read_all_configFile():
     issuer_C = format(configP_ISSUER_ATTRIBUTES["issuer_c"])
     hash_type = format(configP_FILE_HASHING["hash_type"])
     hash_value = format(configP_FILE_HASHING["hash_value"])
-    private1_decoded = format(configP_CERTIFICATE_DATA["private1_decoded"])
-    public1_decoded = format(configP_CERTIFICATE_DATA["public1_decoded"])
-    private2_decoded = format(configP_CERTIFICATE_DATA["private2_decoded"])
-    public2_decoded = format(configP_CERTIFICATE_DATA["public2_decoded"])
+    private_decoded = format(configP_CERTIFICATE_DATA["private_decoded"])
+    public_decoded = format(configP_CERTIFICATE_DATA["public_decoded"])
 
 
 # initialize configuration
@@ -85,10 +83,8 @@ def configParser_write_all_configFile():
     configP_ISSUER_ATTRIBUTES["issuer_c"] = issuer_C
     configP_FILE_HASHING["hash_type"] = hash_type
     configP_FILE_HASHING["hash_value"] = hash_value
-    configP_PRIVATE_KEY["private1_decoded"] = private1_decoded
-    configP_PRIVATE_KEY["public1_decoded"] = public1_decoded
-    configP_PRIVATE_KEY["private2_decoded"] = private2_decoded
-    configP_PRIVATE_KEY["public2_decoded"] = public2_decoded
+    configP_PRIVATE_KEY["private_decoded"] = private_decoded
+    configP_PRIVATE_KEY["public_decoded"] = public_decoded
     # commit config settings to config file
     with open("settings.ini", "w") as conf:
         configP_Writer_Object.write(conf)
