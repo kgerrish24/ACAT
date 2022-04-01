@@ -123,11 +123,6 @@ def app_settings(request):
     return render(request, "app_settings.html", context)
 
 
-def index(request):
-    logging.info("FUNCTION HTML index")
-    return render(request, "index.html", {})
-
-
 def examine(request):
     logging.info("FUNCTION HTML examine")
     return render(request, "examine.html", {})
@@ -242,6 +237,14 @@ def generate_Certificate(request):
         file_Processing(fp_NewCert_TimeStamp)
         # return response with html
         return HttpResponse(html)
+
+
+def index(request):
+    return render(request, "index.html", {})
+
+
+def keystore(request):
+    return render(request, "keystore.html", {})
 
 
 def messaging(request):

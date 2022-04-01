@@ -5,7 +5,8 @@
 
 
 <!-- <link rel="stylesheet" href="{% static 'css/genkeypair.css' %}"> -->
-<!-- <script src="{% static 'js/jquery-3.5.1.min.js' %}"> -->
+<!-- <script src="{% static 'js/button_active.js' %}"></script> -->
+
 
 <script>
     function funcRSA() {
@@ -14,6 +15,9 @@
         document.getElementById("mySelectDSA").hidden = true;
         document.getElementById("mySelectEC").hidden = true;
         document.getElementById("mySelectCurve").disabled = true;
+        document.getElementById("myInputRSA").style = "color:blue; font-weight: bold";
+        document.getElementById("myInputDSA").style = "color:black; font-weight: normal";
+        document.getElementById("myInputEC").style = "color:black; font-weight: normal";
         var x = document.getElementById("myInputRSA").value;
         document.getElementById("Algorithm").value = x;
     }
@@ -22,6 +26,9 @@
         document.getElementById("mySelectDSA").hidden = false;
         document.getElementById("mySelectEC").hidden = true;
         document.getElementById("mySelectCurve").disabled = true;
+        document.getElementById("myInputRSA").style = "color:black; font-weight: normal";
+        document.getElementById("myInputDSA").style = "color:blue; font-weight: bold";
+        document.getElementById("myInputEC").style = "color:black; font-weight: normal";
         var x = document.getElementById("myInputDSA").value;
         document.getElementById("Algorithm").value = x;
     }
@@ -30,6 +37,9 @@
         document.getElementById("mySelectDSA").hidden = true;
         document.getElementById("mySelectEC").hidden = false;
         document.getElementById("mySelectCurve").disabled = false;
+        document.getElementById("myInputRSA").style = "color:black; font-weight: normal";
+        document.getElementById("myInputDSA").style = "color:black; font-weight: normal";
+        document.getElementById("myInputEC").style = "color:blue; font-weight: bold";
         var x = document.getElementById("myInputEC").value;
         document.getElementById("Algorithm").value = x;
     }
@@ -65,7 +75,7 @@
         <header>
             <div class="w3-row w3-padding-64">
                 <div class="w3-twothird w3-container">
-                    <h2 class="w3-text-teal">Generate Self-Signed Key Pair</h2>
+                    <h2 class="w3-text-teal">Generate Key Pair</h2>
                 </div>
             </div>
         </header>
@@ -75,8 +85,20 @@
             <div class="breaking">
                 <div class="w3-container">
                     <fieldset>
+
                         <legend>Settings</legend>
                         <div class="w3-container">
+
+                            <label>
+                                Algorithm
+                                <input id="Algorithm" name="Algorithm" hidden="True">
+                                <input type="button" onclick="funcRSA()" id="myInputRSA" value="RSA">
+                                <input type="button" onclick="funcDSA()" id="myInputDSA" value="DSA">
+                                <input type="button" onclick="funcEC()" id="myInputEC" value="EC">
+                            </label>
+
+                            <br>
+
                             <input id="SigAlg" name="SigAlg" hidden="True">
                             <label>Signature Algorithm</label>
                             <select id="mySelectRSA" disabled="true">
@@ -110,16 +132,6 @@
                             </select>
 
                             <br>
-
-                            <label>
-                                Algorithm
-                                <input id="Algorithm" name="Algorithm" hidden="True">
-                                <input type="button" onclick="funcRSA()" id="myInputRSA" value="RSA">
-                                <input type="button" onclick="funcDSA()" id="myInputDSA" value="DSA">
-                                <input type="button" onclick="funcEC()" id="myInputEC" value="EC">
-                            </label>
-
-
 
                             <div class="container">
                                 <label for="KeySize">Key Size</label>

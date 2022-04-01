@@ -4,7 +4,7 @@
 from configparser import ConfigParser
 
 
-global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
+global private_KeySize, private_SigAlg, private_Algorithm, private_Curve
 global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
 global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
 global hash_type, hash_value, private_decoded, public_decoded
@@ -12,7 +12,7 @@ global no_issuer_Address, no_subject_Address
 
 
 def configParser_read_all_configFile():
-    global private_KeySize, private_SigAlg, private_Algorithm, private_Curve, private_Format
+    global private_KeySize, private_SigAlg, private_Algorithm, private_Curve
     global subject_CN, subject_O, subject_OU, subject_L, subject_S, subject_C
     global issuer_CN, issuer_O, issuer_OU, issuer_L, issuer_S, issuer_C
     global hash_type, hash_value, private_decoded, public_decoded
@@ -30,7 +30,6 @@ def configParser_read_all_configFile():
     private_SigAlg = format(configP_PRIVATE_KEY["sigalg"])
     private_Algorithm = format(configP_PRIVATE_KEY["algorithm"])
     private_Curve = format(configP_PRIVATE_KEY["curve"])
-    private_Format = format(configP_PRIVATE_KEY["format"])
     subject_CN = format(configP_SUBJECT_ATTRIBUTES["subject_cn"])
     subject_O = format(configP_SUBJECT_ATTRIBUTES["subject_o"])
     subject_OU = format(configP_SUBJECT_ATTRIBUTES["subject_ou"])
@@ -67,7 +66,6 @@ def configParser_write_all_configFile():
     configP_PRIVATE_KEY["keysize"] = private_KeySize
     configP_PRIVATE_KEY["sigalg"] = private_SigAlg
     configP_PRIVATE_KEY["algorithm"] = private_Algorithm
-    configP_PRIVATE_KEY["format"] = private_Format
     configP_PRIVATE_KEY["curve"] = private_Curve
     configP_SUBJECT_ATTRIBUTES["subject_cn"] = subject_CN
     configP_SUBJECT_ATTRIBUTES["subject_o"] = subject_O
